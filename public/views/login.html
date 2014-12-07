@@ -1,0 +1,108 @@
+<div layout="column"
+     layout-align="center center">
+    <img class="pepl-logo" src="assets/images/epl.png">
+</div>
+
+
+
+<div layout="column" layout-lg="row" layout-gt-lg="row">
+  <div flex="15" show-lg show-gt-lg></div>
+
+  <div flex>
+    <div layout="row" layout-align="space-around center">
+      <form class="form-block"
+            name="loginForm"
+            ng-submit="loginController.login()"
+            novalidate>
+        <h2 class="form-title">SIGN IN</h2>
+
+        <md-text-float class="input-block"
+                       type="text"
+                       label="Username or Email"
+                       ng-model="credentials.ID"
+                       required></md-text-float>
+        <md-text-float class="input-block"
+                       type="password"
+                       label="Password"
+                       ng-model="credentials.password"
+                       required></md-text-float>
+        <br>
+        <md-button type="submit"
+                   ng-disabled="xhrInProgress"
+                   class="md-primary md-raised btn-block btn-lg">sing in</md-button>
+      </form>
+    </div>
+  </div>
+
+  <div flex="15" show-lg show-gt-lg></div>
+
+  <div flex>
+    <div layout="row" layout-align="space-around center">
+      <form class="form-block"
+            name="signUpForm"
+            ng-submit="loginController.singup()"
+            novalidate>
+        <h2 class="form-title">SIGN UP</h2>
+
+        <md-text-float class="input-block"
+                       type="text"
+                       label="Username"
+                       ng-model="newPlayer.player_username"
+                       required></md-text-float>
+        <md-text-float class="input-block"
+                       type="email"
+                       label="Email"
+                       ng-model="newPlayer.player_email"
+                       required></md-text-float>
+        <md-text-float class="input-block"
+                       type="password"
+                       label="Password"
+                       ng-model="newPlayer.player_password"
+                       required></md-text-float>
+        <br>
+        <md-button type="submit"
+                   ng-disabled="xhrInProgress"
+                   class="md-primary md-raised btn-block btn-lg">sing up</md-button>
+      </form>
+    </div>
+  </div>
+
+  <div flex="15" show-lg show-gt-lg></div>
+</div>
+
+
+
+<div class="aboot-pepl"
+     layout="column"
+     layout-lg="row"
+     layout-gt-lg="row"
+     layout-align="space-around center">
+  <div flex layout="column" layout-align="space-around center">
+    <i class="ion-ios7-locked-outline"></i>
+    <h4 class="thumb-title">auto lock-down</h4>
+    <small class="thumb-content">remember those days, when i WAS president...<br>now i don't have to look after you Mitches!</small>
+  </div>
+
+  <div flex layout="column" layout-align="space-around center">
+    <i class="ion-ios7-football-outline"></i>
+    <h4 class="thumb-title">triple the excitement</h4>
+    <small class="thumb-content">one man one desire...<br>get down...get down again</small>
+  </div>
+
+  <div flex layout="column" layout-align="space-around center">
+    <i class="ion-ios7-chatboxes-outline"></i>
+    <h4 class="thumb-title">introducing the wall</h4>
+    <small class="thumb-content">what's a league without trash-talk<br>PS wall is powered by socket.io</small>
+  </div>
+</div>
+
+
+
+<!-- i want it clean, so the footer lives @ the login page ONLY -->
+<footer layout="column" layout-align="center center">
+  <div>
+    <a class="github" href="https://github.com/moeduffdude/pepl" target="blank"><i class="ion-social-github"></i></a><br>
+    <small>disclaimer: names and logo mentioned are the property of their respective owners.<br>
+    <small>&copy; 2014 Moe Szyslak</small>
+  </div>
+</footer>
