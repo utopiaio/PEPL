@@ -50,7 +50,10 @@
         <md-list class="main-menu">
 
           <md-item>
-            <md-button class="md-grid-item-content" aria-label="today" ng-click="appController.activateMenu($event, '/today')">
+            <md-button class="md-grid-item-content"
+                       aria-label="today"
+                       menu-target="fixtures"
+                       ng-click="appController.navigateTo('/')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
                   <i class="ion-ios7-alarm-outline md-item-icon"></i>
@@ -61,7 +64,10 @@
           </md-item>
 
           <md-item>
-            <md-button class="md-grid-item-content" aria-label="coming up"  ng-click="appController.activateMenu($event, '/season')">
+            <md-button class="md-grid-item-content"
+                       aria-label="coming up"
+                       menu-target="season"
+                       ng-click="appController.navigateTo('/season')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
                   <i class="ion-ios7-calendar-outline md-item-icon"></i>
@@ -72,7 +78,10 @@
           </md-item>
 
           <md-item>
-            <md-button class="md-grid-item-content" aria-label="standings" ng-click="appController.activateMenu($event, '/standings')">
+            <md-button class="md-grid-item-content"
+                       aria-label="standings"
+                       menu-target="standings"
+                       ng-click="appController.navigateTo('/standings')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
                   <i class="ion-ios7-location-outline md-item-icon"></i>
@@ -83,7 +92,10 @@
           </md-item>
 
           <md-item>
-            <md-button class="md-grid-item-content" aria-label="wall" ng-click="appController.activateMenu($event, '/wall')">
+            <md-button class="md-grid-item-content"
+                       aria-label="wall"
+                       menu-target="wall"
+                       ng-click="appController.navigateTo('/wall')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
                   <i class="ion-ios7-chatboxes-outline md-item-icon"></i>
@@ -94,7 +106,9 @@
           </md-item>
 
           <md-item>
-            <md-button class="md-grid-item-content" aria-label="logout" ng-click="appController.activateMenu($event, 'logout')">
+            <md-button class="md-grid-item-content"
+                       aria-label="logout"
+                       ng-click="appController.navigateTo('logout')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
                   <i class="ion-ios7-close-outline md-item-icon"></i>
@@ -135,7 +149,7 @@
     <script src="assets/js/app.js"></script>
 
     <script src="assets/js/controllers/login.js"></script>
-    <script src="assets/js/controllers/home.js"></script>
+    <script src="assets/js/controllers/fixtures.js"></script>
     <script src="assets/js/controllers/players.js"></script>
 
     <script src="assets/js/script.js"></script>

@@ -12,10 +12,21 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
   });
 
   $rootScope.$on('$routeChangeStart', function (event, target) {
+    $('md-list.main-menu md-item button').removeClass('active');
   });
 
   $rootScope.$on('$routeChangeSuccess', function (event, target) {
     $rootScope.showFab = (target.$$route && target.$$route.originalPath !== '/login');
+    $('md-list.main-menu md-item button').removeClass('active');
+
+    if (target.$$route) {
+      switch (target.$$route.originalPath) {
+        case '/':
+          $('button[menu-target="fixtures"]').addClass('active');
+        break;
+      }
+    }
+
   });
 
   this.toggleMenu = function() {
@@ -26,13 +37,9 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
     $mdSidenav('menu').close();
   };
 
-  this.activateMenu = function (e, url) {
-    $('md-list.main-menu md-item button').removeClass('active');
+  this.navigateTo = function (url) {
     $rootScope.appController.closeMenu();
-
-    url === 'logout' ? Auth.logout() : $(e.delegateTarget).addClass('active');
-
-    // post menu activation/close goes here
+    url === 'logout' ? Auth.logout() : $location.path(url);
   };
 
   $rootScope.appController = this;
@@ -69,8 +76,8 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
   })
 
   .when('/', {
-    templateUrl: 'views/home.html',
-    controller: 'homeController',
+    templateUrl: 'views/fixtures.html',
+    controller: 'fixturesController',
     resolve: {
       loggedIn: AuthProvider.isLoggedIn
     }
