@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="pepl" ng-controller="appController">
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+    <meta content="PEPL" name="apple-mobile-web-app-title">
+
+    <!-- home screen -->
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/images/ico/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/images/ico/apple-touch-icon-114.png">
+    <!-- bookmark -->
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/images/ico/apple-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/images/ico/apple-144.png">
+
+    <meta content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, minimal-ui" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <meta name="fragment" content="!">
+    <meta name="keywords" content="Megan Fox">
+    <meta name="description" content="Prediction English Premier League">
+    <meta name="author" content="Moe Szyslak">
+
+    <title>PEPL</title>
+
+    <base href="/">
+
+    <link rel="stylesheet" href="assets/angular/angular-material.min.css">
+    <link rel="stylesheet" href="assets/angular/themes/cyan-theme.css">
+    <link rel="stylesheet" href="assets/angular/themes/grey-theme.css">
+    <link rel="stylesheet" href="assets/ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+  </head>
+
+
+
+  <body>
+
+    <md-sidenav md-component-id="menu">
+      <!--
+      <md-toolbar layout-align="center center">
+        <h1 class="md-toolbar-tools">P-EPL</h1>
+      </md-toolbar>
+      -->
+
+      <md-content class="md-padding">
+        <md-list class="main-menu">
+
+          <md-item>
+            <md-button class="md-grid-item-content" aria-label="today" ng-click="appController.activateMenu($event, '/today')">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios7-alarm-outline md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">today</p>
+            </md-button>
+          </md-item>
+
+          <md-item>
+            <md-button class="md-grid-item-content" aria-label="coming up"  ng-click="appController.activateMenu($event, '/season')">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios7-calendar-outline md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">season</p>
+            </md-button>
+          </md-item>
+
+          <md-item>
+            <md-button class="md-grid-item-content" aria-label="standings" ng-click="appController.activateMenu($event, '/standings')">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios7-location-outline md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">standings</p>
+            </md-button>
+          </md-item>
+
+          <md-item>
+            <md-button class="md-grid-item-content" aria-label="wall" ng-click="appController.activateMenu($event, '/wall')">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios7-chatboxes-outline md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">the wall</p>
+            </md-button>
+          </md-item>
+
+          <md-item>
+            <md-button class="md-grid-item-content" aria-label="logout" ng-click="appController.activateMenu($event, 'logout')">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios7-close-outline md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">logout</p>
+            </md-button>
+          </md-item>
+
+        </md-list>
+
+      </md-content>
+    </md-sidenav>
+
+    <md-button ng-click="appController.toggleMenu()"
+               ng-show="showFab"
+               aria-label="toggle menu"
+               class="md-fab md-primary md-fab-fixed-bottom-right ng-show-hide" >
+      <i class="ion-navicon" style="font-size: 32px;"></i>
+    </md-button>
+
+    <div class="view" ng-view></div>
+
+    <script src="assets/jquery/jquery-2.1.1.min.js"></script>
+    <script src="assets/moment/moment.min.js"></script>
+
+    <script src="assets/angular/angular.min.js"></script>
+    <script src="assets/angular/angular-animate.min.js"></script>
+    <script src="assets/angular/angular-route.min.js"></script>
+    <script src="assets/angular/angular-touch.min.js"></script>
+
+    <script src="assets/hammerjs/hammer.min.js"></script>
+    <script src="assets/angular/angular-aria.min.js"></script>
+    <script src="assets/angular/angular-material.min.js"></script>
+    <script src="assets/angular/angular-progress.js"></script>
+    <script src="assets/angular/angular-auth.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script src="assets/js/controllers/login.js"></script>
+    <script src="assets/js/controllers/home.js"></script>
+
+    <script src="assets/js/script.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </body>
+</html>

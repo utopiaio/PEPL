@@ -1,0 +1,205 @@
+/* font: START ---------------------------------------------------------------*/
+@font-face {
+  font-family: 'clearSans-thin';
+  src: url(../fonts/clearsans/WOFF/ClearSans-Thin.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'clearSans-light';
+  src: url(../fonts/clearsans/WOFF/ClearSans-Light.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'clearSans-regular';
+  src: url(../fonts/clearsans/WOFF/ClearSans-Regular.woff) format('woff');
+}
+
+.clearSans-thin {
+  font-family: 'clearSans-thin';
+}
+
+.clearSans-light {
+  font-family: 'clearSans-light';
+}
+
+.clearSans-regular {
+  font-family: 'clearSans-regular';
+}
+/* font: END -----------------------------------------------------------------*/
+
+
+
+/* Angular.js: START ---------------------------------------------------------*/
+.view.ng-enter {
+  -webkit-animation: 0.5s fadeInLeft;
+  animation: 0.5s fadeInLeft;
+}
+
+.view.ng-leave {
+  -webkit-animation: 0s fadeInRight;
+  animation: 0s fadeInRight;
+}
+
+.repeat.ng-enter {
+  -webkit-animation: 0.5s flipInX;
+  animation: 0.5s flipInX;
+}
+
+.repeat.ng-leave {
+  -webkit-animation: 0.5s flipOutX;
+  animation: 0.5s flipOutX;
+}
+
+.repeat.ng-move {
+  -webkit-animation: 0.5s flipOutX;
+  animation: 0.5s flipOutX;
+}
+
+.ng-show-hide.ng-hide-add.ng-hide-add-active {
+  -webkit-animation: 0.5s zoomOut;
+  animation: 0.5s zoomOut;
+}
+
+.ng-show-hide.ng-hide-remove.ng-hide-remove-active {
+  -webkit-animation: 0.5s rotateIn;
+  animation: 0.5s rotateIn;
+}
+
+[ng\:cloak], [ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+}
+/* Angular.js: END -----------------------------------------------------------*/
+
+
+
+/* material customization: START ---------------------------------------------*/
+md-sidenav {
+  width: 240px;
+}
+
+md-sidenav,
+md-backdrop.md-opaque.md-default-theme {
+  position: fixed;
+}
+
+.md-grid-item-content {
+  width: 100px;
+}
+
+.md-grid-text {
+  margin-top: -8px;
+}
+
+md-toast {
+  position: fixed;
+}
+
+.main-menu button.active {
+  color: #03a9f4;
+}
+
+form.form-block {
+  width: 100%;
+  margin-bottom: 64px;
+}
+
+form.form-block .form-title {
+  text-align: center;
+}
+
+md-input-group.input-block input {
+  width: 100%;
+}
+
+.md-item-icon {
+  font-size: 64px;
+}
+
+button.btn-block {
+  width: 100%;
+}
+
+button.btn-lg {
+  padding: 12px;
+}
+
+.md-fab-fixed-bottom-right {
+  position: fixed;
+  top: auto;
+  right: 28px;
+  bottom: 28px;
+  left: auto;
+}
+/* material customization: END -----------------------------------------------*/
+
+
+
+/* style */
+body {
+  font-family: 'clearSans-light';
+  padding: 0 12px;
+}
+
+input, textarea {
+  border-radius: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  margin-bottom: 12px;
+  font-family: 'clearSans-thin';
+}
+
+img.pepl-logo {
+  height: 100px;
+  width: auto;
+  margin-bottom: 64px;
+  margin-top: 8px;
+}
+
+div.aboot-pepl {
+  font-size: 18px;
+}
+
+div.aboot-pepl div[flex] {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+div.aboot-pepl .thumb-title {
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+div.aboot-pepl .thumb-content {
+  line-height: 132%;
+}
+
+div.aboot-pepl i {
+  font-size: 72px;
+  opacity: 0.75;
+}
+
+small {
+  font-size: 75%;
+}
+
+footer {
+  padding-bottom: 8px;
+  color: #666;
+}
+
+footer * {
+  text-decoration: none;
+  color: #999;
+  line-height: 100%;
+  text-align: center;
+}
+
+footer a.github {
+  font-size: 32px;
+}
