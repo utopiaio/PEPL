@@ -100,8 +100,16 @@ md-input-group.input-search {
   margin: 0;
 }
 
-md-input-group.input-block input {
+md-input-group.input-block input,
+input.input-block,
+select.input-block {
   width: 100%;
+}
+
+select.input-block,
+input.input-block[type="date"],
+input.input-block[type="time"] {
+  margin-bottom: 16px;
 }
 
 md-input-group.input-search input {
@@ -200,6 +208,11 @@ div.aboot-pepl .thumb-content {
 div.aboot-pepl i {
   font-size: 72px;
   opacity: 0.75;
+}
+
+img.club-logo {
+  width: 72px;
+  height: auto;
 }
 
 small {

@@ -1,5 +1,92 @@
-<!-- <input type="date">
-<input type="time">
- -->
+<div layout="column">
+  <div>
+    <div layout="row" align="center center">
+      <div flex>
+          <md-text-float class="input-search"
+                         type="text"
+                         label="Search"
+                         ng-model="search"
+                         required></md-text-float>
+      </div>
+    </div>
+  </div>
 
- <h1>fixtures</h1>
+  <md-content>
+    <md-list>
+
+      <md-item ng-repeat="fixture in fixtures | filter:search | orderBy:'fixture_time'"
+               ng-swipe-right="action.showAction = false;"
+               ng-swipe-left="action.showAction = true;"
+               ng-mouseenter="action.showAction = true;"
+               ng-mouseleave="action.showAction = false;" >
+
+        <md-item-content>
+          <div class="md-tile-content">
+            <div layout="row" layout-align="space-around center" layout-fill>
+              <div layout="column" layout-align="center center">
+                <img class="club-logo" ng-src="assets/images/teams/{{ fixture.fixture_team_home }}.png">
+                <h3>{{ fixture.fixture_team_home }}</h3>
+              </div>
+
+              <div>
+                <h3>Vs.</h3>
+              </div>
+
+              <div layout="column" layout-align="center center">
+                <img class="club-logo" ng-src="assets/images/teams/Chelsea.png">
+                <h3>{{ fixture.fixture_team_away }}</h3>
+              </div>
+            </div>
+
+            <div layout="row" layout-align="space-around center" layout-fill>
+              <div>
+                <h4>{{ fixture.fixture_time | date: 'MMMM d, hh:mm a' }}</h4>
+              </div>
+            </div>
+          </div>
+
+          <div class="action" ng-show="action.showAction" >
+            <div layout="row" layout-align="space-around center" layout-fill>
+              <div ng-if="player.player_suspended === true">
+                <md-button ng-click="playersController.activatePlayer(player.player_id)"
+                           ng-disabled="xhrInProgress"
+                           aria-label="activate player"
+                           class="md-fab md-primary" >
+                  <i class="ion-thumbsup" style="font-size: 32px;"></i>
+                </md-button>
+              </div>
+
+              <div ng-if="player.player_suspended === false">
+                <md-button ng-click="playersController.suspendPlayer(player.player_id)"
+                           ng-disabled="xhrInProgress"
+                           aria-label="suspend player"
+                           class="md-fab md-warn" >
+                  <i class="ion-thumbsdown" style="font-size: 32px;"></i>
+                </md-button>
+              </div>
+
+              <div>
+                <md-button ng-dblclick="playersController.deletePlayer(player.player_id)"
+                           ng-swipe-right="playersController.deletePlayer(player)"
+                           ng-disabled="xhrInProgress"
+                           aria-label="suspend player"
+                           class="md-fab md-warn" >
+                  <i class="ion-ios7-trash-outline" style="font-size: 32px;"></i>
+                </md-button>
+              </div>
+            </div>
+          </div>
+        </md-item-content>
+
+        <md-divider ng-if="!$last"></md-divider>
+      </md-item>
+
+    </md-list>
+  </md-content>
+</div>
+
+
+
+<!--
+<pre>{{ fixtures | json }}</pre>
+-->

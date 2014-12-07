@@ -1,0 +1,50 @@
+<div layout="column" layout-lg="row" layout-gt-lg="row">
+
+  <div flex="30" show-lg show-gt-lg></div>
+
+  <div flex>
+    <div layout="row" layout-align="space-around center">
+      <form class="form-block"
+            name="signUpForm"
+            ng-submit="fixtureNewController.save()"
+            novalidate>
+        <br>
+        <h2 class="form-title">New Fixture</h2>
+
+        <div>
+          <label>home</label>
+          <select class="input-block" ng-model="newFixture.fixture_team_home">
+            <option ng-repeat="team in teams" ng-value="team">{{ team }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label>away</label>
+          <select class="input-block" ng-model="newFixture.fixture_team_away">
+            <option ng-repeat="team in teams" ng-value="team">{{ team }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label>date</label><br>
+          <input type="date" class="input-block" ng-model="newFixture.date">
+        </div>
+
+        <div>
+          <label>time</label><br>
+          <input type="time" class="input-block" ng-model="newFixture.time">
+        </div>
+
+        <br>
+        <br>
+        <pre>{{ newFixture | json }}</pre>
+
+        <md-button type="submit"
+                   ng-disabled="xhrInProgress"
+                   class="md-primary md-raised btn-block btn-lg">add</md-button>
+      </form>
+    </div>
+  </div>
+
+  <div flex="30" show-lg show-gt-lg></div>
+</div>

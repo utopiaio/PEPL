@@ -19,6 +19,7 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
     $rootScope.showFab = (target.$$route && target.$$route.originalPath !== '/login');
     $('md-list.main-menu md-item button').removeClass('active');
 
+    // menu activation based on the, the good ol' switch!
     if (target.$$route) {
       switch (target.$$route.originalPath) {
         case '/':
@@ -78,6 +79,14 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
   .when('/', {
     templateUrl: 'views/fixtures.html',
     controller: 'fixturesController',
+    resolve: {
+      loggedIn: AuthProvider.isLoggedIn
+    }
+  })
+
+  .when('/new', {
+    templateUrl: 'views/fixture-new.html',
+    controller: 'fixtureNewController',
     resolve: {
       loggedIn: AuthProvider.isLoggedIn
     }
