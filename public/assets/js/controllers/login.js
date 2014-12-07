@@ -20,7 +20,7 @@ var loginController = app.controller('loginController', ['$scope', '$http', '$lo
     }, function (data) {
       $timeout(function() {
         $mdToast.show({
-          template: '<md-toast style="position: fixed;"><span flex>UNAUTHORIZED Mitch!</span></md-toast>',
+          template: '<md-toast><span flex>UNAUTHORIZED Mitch!</span></md-toast>',
           hideDelay: 3000,
           position: 'bottom left'
         });
@@ -33,7 +33,7 @@ var loginController = app.controller('loginController', ['$scope', '$http', '$lo
       .success(function (data, status, headers, config) {
         $timeout(function() {
           $mdToast.show({
-            template: '<md-toast style="position: fixed;"><span flex>you\'ll be notified by email once you\'re approved</span></md-toast>',
+            template: '<md-toast><span flex>you\'ll be notified by email once you\'re approved</span></md-toast>',
             hideDelay: 5000,
             position: 'bottom left'
           });
@@ -43,9 +43,9 @@ var loginController = app.controller('loginController', ['$scope', '$http', '$lo
         var toast = '';
 
         if (status === 409) {
-          toast = '<md-toast style="position: fixed;"><span flex>username or email taken, try a different one</span></md-toast>';
+          toast = '<md-toast><span flex>username or email taken, try a different one</span></md-toast>';
         } else if (status === 403) {
-          toast = '<md-toast style="position: fixed;"><span flex>one too many requests Mitch!</span></md-toast>'
+          toast = '<md-toast><span flex>one too many requests Mitch!</span></md-toast>'
         } else {
           $log.error(data);
         }
