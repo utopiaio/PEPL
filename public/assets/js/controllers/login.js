@@ -1,4 +1,4 @@
-var loginController = app.controller('loginController', ['$scope', '$http', '$location', '$log', '$mdToast', '$timeout', 'Auth', function ($scope, $http, $location, $log, $mdToast, $timeout, Auth) {
+var loginController = app.controller('loginController', ['$scope', '$http', '$location', 'Toast', 'Auth', function ($scope, $http, $location, Toast, Auth) {
   $scope.credentials = {
     ID: '',
     password: ''
@@ -18,26 +18,14 @@ var loginController = app.controller('loginController', ['$scope', '$http', '$lo
     Auth.login($scope.credentials).then(function (data) {
       $location.path('/').replace();
     }, function (data) {
-      $timeout(function() {
-        $mdToast.show({
-          template: '<md-toast><span flex>UNAUTHORIZED Mitch!</span></md-toast>',
-          hideDelay: 3000,
-          position: 'bottom left'
-        });
-      }, 64);
+      Toast.show({template: '<md-toast><span flex>UNAUTHORIZED Mitch!</span></md-toast>'});
     });
   };
 
   this.singup = function () {
     $http.post('api/signup', $scope.newPlayer)
       .success(function (data, status, headers, config) {
-        $timeout(function() {
-          $mdToast.show({
-            template: '<md-toast><span flex>you\'ll be notified by email once you\'re approved</span></md-toast>',
-            hideDelay: 5000,
-            position: 'bottom left'
-          });
-        }, 64);
+        Toast.show({template: '<md-toast><span flex>you\'ll be notified by email once you\'re approved</span></md-toast>'});
       })
       .error(function (data, status, headers, config) {
         var toast = '';
@@ -46,17 +34,9 @@ var loginController = app.controller('loginController', ['$scope', '$http', '$lo
           toast = '<md-toast><span flex>username or email taken, try a different one</span></md-toast>';
         } else if (status === 403) {
           toast = '<md-toast><span flex>one too many requests Mitch!</span></md-toast>'
-        } else {
-          $log.error(data);
         }
 
-        $timeout(function() {
-          $mdToast.show({
-            template: toast,
-            hideDelay: 3000,
-            position: 'bottom left'
-          });
-        }, 64);
+        Toast.show({template: toast});
       });
   };
 

@@ -1,4 +1,4 @@
-var app = angular.module('pepl', ['ngRoute', 'ngAnimate', 'ngTouch', 'ngMaterial', 'ngAria', 'moeAuth', 'moeProgressMaterial']);
+var app = angular.module('pepl', ['ngRoute', 'ngAnimate', 'ngTouch', 'ngMaterial', 'ngAria', 'moeAuth', 'moeProgressMaterial', 'quickToast']);
 
 
 
@@ -15,7 +15,7 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
   });
 
   $rootScope.$on('$routeChangeSuccess', function (event, target) {
-    $rootScope.showFab = (target.$$route.originalPath !== '/login');
+    $rootScope.showFab = (target.$$route && target.$$route.originalPath !== '/login');
   });
 
   this.toggleMenu = function() {
@@ -60,7 +60,7 @@ app.config(function($sceDelegateProvider, AuthProvider) {
 // we're going to intercept request and look out for anything suspicious
 // meaning: we're going to look for property 'notify' and call `iPNotify`
 // that's pretty much it --- talk about overkill :)
-app.config(function ($routeProvider, $locationProvider, $logProvider, AuthProvider) {
+app.config(function ($routeProvider, $locationProvider, AuthProvider) {
   $routeProvider
 
   .when('/login', {
@@ -76,10 +76,17 @@ app.config(function ($routeProvider, $locationProvider, $logProvider, AuthProvid
     }
   })
 
+  .when('/players', {
+    templateUrl: 'views/players.html',
+    controller: 'playersController',
+    resolve: {
+      loggedIn: AuthProvider.isLoggedIn
+    }
+  })
+
   .otherwise({
     redirectTo: '/login'
   });
 
   $locationProvider.html5Mode(true);
-  $logProvider.debugEnabled(true);
 });

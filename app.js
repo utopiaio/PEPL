@@ -158,15 +158,11 @@ app.use('/api/signup', function (request, response, next) {
               to: emailConfig.adminEmail,
               subject: 'New User',
               text: 'you have a new user Mitche, approve or decline that Mitch',
-              html: '<b>you have a new user Mitche, approve or decline that Mitch</b>'
+              html: 'you have a new user Mitche, approve or decline that Mitch'
             };
 
             emailTransporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                console.log(error);
-              } else {
-                console.log('email sent ['+ info.response +']');
-              }
+              console.log(error === null ? info : error);
             });
           }
         });
@@ -195,15 +191,84 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 
 
 
-app.use('/api/teams', function (request, response, next) {
-  switch (request.method) {
+app.use(/^\/api\/players\/.*/, function (request, response, next) {
+  if (request.session.player_type === 'ADMINISTRATOR') {
+    next();
+  } else {
+    response.status(412);
+    response.json({});
+  }
+});
+
+
+
+app.use('/api/players/:id?/:status?', function (request, response, next) {
+  switch(request.method) {
     case 'GET':
+      if (request.params.id === undefined) {
+        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players;', [], function (error, result) {
+          if (error) {
+            response.status(409);
+            response.json({});
+          } else {
+            response.status(200);
+            response.json(result.rows);
+          }
+        });
+      } else {
+        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE player_id=$1;', [request.params.id], function (error, result) {
+          if (error) {
+            response.status(409);
+            response.json({});
+          } else {
+            response.status(result.rowCount === 1 ? 200 : 404);
+            response.json(result.rowCount === 1 ? result.rows[0] : {});
+          }
+        });
+      }
     break;
 
-    case 'POST':
+    case 'PUT':
+      client.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.params.status === 'suspend' ? true : false, request.params.id], function (error, result) {
+        if (error) {
+          response.status(409);
+          response.json({});
+        } else {
+          response.status(result.rowCount === 1 ? 200 : 404);
+          response.json(result.rowCount === 1 ? result.rows[0] : {});
+
+          if (result.rowCount === 1) {
+            var mailOptions = {
+              from: emailConfig.from,
+              to: result.rows[0].player_email,
+              subject: request.params.status === 'suspend' ? 'Account SUSPEND' : 'Account Activated ✔',
+              text: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
+              html: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
+            };
+
+            emailTransporter.sendMail(mailOptions, function (error, info) {
+              console.log(error === null ? info : error);
+            });
+          }
+        }
+      });
     break;
 
     case 'DELETE':
+      client.query('DELETE FROM players where player_id=$1', [request.params.id], function (error, result) {
+        if (error) {
+          response.status(409);
+          response.json({});
+        } else {
+          response.status(202);
+          response.json({});
+        }
+      });
+    break;
+
+    default:
+      response.status(405);
+      response.json({});
     break;
   }
 });
