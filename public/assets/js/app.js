@@ -1,10 +1,16 @@
-var app = angular.module('pepl', ['ngRoute', 'ngAnimate', 'ngTouch', 'ngMaterial', 'ngAria', 'moeAuth', 'moeProgressMaterial', 'quickToast']);
+var app = angular.module('pepl', ['ngRoute',
+                                  'ngAnimate',
+                                  'ngTouch',
+                                  'ngMaterial',
+                                  'ngAria',
+                                  'moeAuth',
+                                  'moeProgressMaterial',
+                                  'moeQuickToast']);
 
 
 
 app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $mdSidenav, Auth, xhrInProgress) {
   xhrInProgress.listenToXHR();
-
   $rootScope.showFab = true;
 
   $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {
@@ -12,6 +18,8 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
   });
 
   $rootScope.$on('$routeChangeStart', function (event, target) {
+    // clearing all active menu
+    // the designated menu will be activated on `routeChangeSuccess`
     $('md-list.main-menu md-item button').removeClass('active');
   });
 
@@ -27,7 +35,6 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
         break;
       }
     }
-
   });
 
   this.toggleMenu = function() {

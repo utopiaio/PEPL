@@ -1,12 +1,3 @@
-/**
- * ngProgress
- * v0.0.2
- * Moe Szyslak, 2014
- *
- * a simple directive that adds the spinner when http is in progress
- * though this is a VERY dirty directive as it requires to set a rootScope
- *
- */
 angular.module('moeProgressMaterial', ['ngMaterial']).config(function ($routeProvider, $httpProvider) {
   $httpProvider.interceptors.push(function ($rootScope, $q) {
     $rootScope.xhrInProgress = false;

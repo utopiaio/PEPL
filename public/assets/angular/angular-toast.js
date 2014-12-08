@@ -1,4 +1,4 @@
-angular.module('quickToast', ['ngMaterial'])
+angular.module('moeQuickToast', ['ngMaterial'])
   .factory('Toast', ['$timeout', '$mdToast', function ($timeout, $mdToast) {
     return {
       show: function (options) {
