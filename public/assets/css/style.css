@@ -40,6 +40,7 @@
   animation: 0s fadeInRight;
 }
 
+/*
 .ng-show-hide.ng-hide-add.ng-hide-add-active {
   -webkit-animation: 0.5s zoomOut;
   animation: 0.5s zoomOut;
@@ -49,6 +50,8 @@
   -webkit-animation: 0.5s rotateIn;
   animation: 0.5s rotateIn;
 }
+*/
+
 
 [ng\:cloak], [ng-cloak],
 [data-ng-cloak],
@@ -213,6 +216,19 @@ div.aboot-pepl i {
 img.club-logo {
   width: 72px;
   height: auto;
+}
+
+p.club-name {
+  font-size: 8px;
+  opacity: 0.5;
+}
+
+i.icon-lg {
+  font-size: 32px;
+}
+
+.text-center {
+  text-align: center;
 }
 
 small {

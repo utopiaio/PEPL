@@ -20,7 +20,12 @@ var nodemailer = require('nodemailer');
 var socket = require('socket.io');
 var sessionStore = require('sessionstore').createSessionStore(); // Memory
 var socketHandshake = require('socket.io-handshake');
-var sha1 = require('./lib/cyper.js');
+var sha1 = require('./lib/cyper');
+
+var login = require('./routers/login');
+var signup = require('./routers/signup');
+var players = require('./routers/players');
+var fixtures = require('./routers/fixtures');
 
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
@@ -29,8 +34,8 @@ var cookieSignature = 'Svi#isdf!93|4{5msVldx!fks(8}';
 var emailConfig = {
   service: 'Gmail',
   auth: {
-    user: 'gmail.user@gmail.com',
-    pass: 'userpass'
+    user: 'moe.duffdude@gmail.com',
+    pass: 'aardruybakmgbpmq'
   },
   from: 'Mamoe <moe.duffdude@gmail.com>',
   adminEmail: 'moe.duffdude@gmail.com'
@@ -69,120 +74,12 @@ app.use(bodyParser.urlencoded({
 
 
 
-app.use('/api/login', function (request, response, next) {
-  switch(request.method) {
-    /**
-     * tells the status of the current user
-     * if session is found, current info is returned
-     * which can be accessed via Auth.info()
-     */
-    case 'GET':
-      response.status(request.session.loggedIn === true ? 200 : 412);
-      response.json({
-        player_id: request.session.player_id,
-        player_username: request.session.player_username,
-        player_email: request.session.player_email,
-        player_type: request.session.player_type,
-        player_suspended: request.session.player_suspended
-      });
-    break;
-
-    /**
-     * login request
-     * if it's all good, session is created and info is returned
-     * which can be accessed via Auth.info()
-     */
-    case 'POST':
-      client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE (player_username=$1 OR player_email=$1) AND player_password=$2 AND player_suspended=$3',
-                   [request.body.ID.toLowerCase(), sha1.sha1(String(request.body.password)), false],
-                   function (error, result) {
-        if (error) {
-          response.status(409);
-          response.json({});
-        } else {
-          if (result.rowCount === 1) {
-            request.session.loggedIn = true;
-            request.session.player_id = result.rows[0].player_id;
-            request.session.player_username = result.rows[0].player_username;
-            request.session.player_email = result.rows[0].player_email;
-            request.session.player_type = result.rows[0].player_type;
-            request.session.player_suspended = result.rows[0].player_suspended;
-            response.status(200);
-            response.json({
-              player_id: result.rows[0].player_id,
-              player_username: result.rows[0].player_username,
-              player_email: result.rows[0].player_email,
-              player_type: result.rows[0].player_type,
-              player_suspended: result.rows[0].player_suspended
-            });
-          } else {
-            response.status(401);
-            response.json({});
-          }
-        }
-      });
-    break;
-
-    /**
-     * logout
-     */
-    case 'DELETE':
-      if (request.session.loggedIn === true) {
-        delete request.session.loggedIn;
-      }
-
-      response.status(request.session.loggedIn === true ? 202 : 401);
-      response.json({});
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
-
-
-
-app.use('/api/signup', function (request, response, next) {
-  switch(request.method) {
-    case 'POST':
-      /**
-       * this measure is next to nothing
-       * but it'll keep out the Mitches out for at-least a second :)
-       * and not to mention Dyno --- 720
-       */
-      if (request.session.blockForAWeek === true) {
-        response.status(403);
-        response.json({});
-      } else {
-        client.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1.sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function (error, result) {
-          response.status(error === null ? 202 : 409);
-          response.json({});
-
-          if (error === null) {
-            var mailOptions = {
-              from: emailConfig.from,
-              to: emailConfig.adminEmail,
-              subject: 'New User',
-              text: 'approve or decline this Mitch',
-              html: 'approve or decline this Mitch'
-            };
-
-            emailTransporter.sendMail(mailOptions, function (error, info) {
-              console.log(error === null ? info : error);
-            });
-          }
-        });
-      }
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
+/**
+ * am exporting route handlers - i don't know it it's "acceptable"
+ * or not, but for now it keeps my code "modular" :)
+ */
+app.use('/api/login', login({client: client, sha1: sha1}));
+app.use('/api/signup', signup({client: client, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 
 
 
@@ -201,140 +98,8 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 
 
 
-/**
- * making sure api/players requires 'ADMINISTRATOR'
- */
-app.use(/^\/api\/players\/.*/, function (request, response, next) {
-  if (request.session.player_type === 'ADMINISTRATOR') {
-    next();
-  } else {
-    response.status(412);
-    response.json({});
-  }
-});
-
-
-
-app.use('/api/players/:id?/:status?', function (request, response, next) {
-  switch(request.method) {
-    case 'GET':
-      if (request.params.id === undefined) {
-        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players;', [], function (error, result) {
-          response.status(error === null ? 200 : 400);
-          response.json(error === null ? result.rows : []);
-        });
-      } else {
-        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE player_id=$1;', [request.params.id], function (error, result) {
-          response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 400);
-          response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
-        });
-      }
-    break;
-
-    /**
-     * api/players/id/suspend --- suspends a players suspends by :id
-     * api/players/id/activate --- anything other than 'suspend' is passed as an argument, player is activated
-     */
-    case 'PUT':
-      client.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.params.status === 'suspend' ? true : false, request.params.id], function (error, result) {
-        response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 400);
-        response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
-
-        if (result && result.rowCount === 1) {
-          var mailOptions = {
-            from: emailConfig.from,
-            to: result.rows[0].player_email,
-            subject: request.params.status === 'suspend' ? 'Account SUSPEND' : 'Account Activated ✔',
-            text: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
-            html: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
-          };
-
-          emailTransporter.sendMail(mailOptions, function (error, info) {
-            console.log(error === null ? info : error);
-          });
-        }
-      });
-    break;
-
-    case 'DELETE':
-      client.query('DELETE FROM players where player_id=$1', [request.params.id], function (error, result) {
-        response.status(error === null ? 202 : 400);
-        response.json({});
-      });
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
-
-
-
-app.use('/api/fixtures/:id?', function (request, response, next) {
-  switch(request.method) {
-    case 'GET':
-      if (request.params.id === undefined) {
-        client.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time FROM fixtures;', [], function (error, result) {
-          response.status(error === null ? 200 : 409);
-          response.json(error === null ? result.rows : 200);
-        });
-      } else {
-        if (request.session.player_type === 'ADMINISTRATOR') {
-          client.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time FROM fixtures WHERE fixture_id=$1;', [request.params.id], function (error, result) {
-            response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 404);
-            response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
-          });
-        } else {
-          response.status(401);
-          response.json({});
-        }
-      }
-    break;
-
-    case 'POST':
-      if (request.session.player_type === 'ADMINISTRATOR') {
-        client.query('INSERT INTO fixtures (fixture_team_home, fixture_team_away, fixture_time) VALUES ($1, $2, $3) RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, request.body.fixture_time], function (error, result) {
-          response.status(error === null ? 202 : 409);
-          response.json(error === null ? result.rows[0] : {});
-        });
-      } else {
-        response.status(401);
-        response.json({});
-      }
-    break;
-
-    case 'PUT':
-      if (request.session.player_type === 'ADMINISTRATOR') {
-        client.query('UPDATE fixtures SET fixture_team_home=$1, fixture_team_away=$2, fixture_time=$3 WHERE fixture_id=$4 RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, request.body.fixture_time, request.params.id], function (error, result) {
-          response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 400);
-          response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
-        });
-      } else {
-        response.status(401);
-        response.json({});
-      }
-    break;
-
-    case 'DELETE':
-      if (request.session.player_type === 'ADMINISTRATOR') {
-        client.query('DELETE FROM fixtures where fixture_id=$1', [request.params.id], function (error, result) {
-          response.status(error === null ? 202 : 409);
-          response.json({});
-        });
-      } else {
-        response.status(401);
-        response.json({});
-      }
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
+app.use('/api/players/:id?/:status?', players({client: client, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
+app.use('/api/fixtures/:id?', fixtures({client: client}));
 
 
 

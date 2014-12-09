@@ -1,5 +1,5 @@
-var fixtureNewController = app.controller('fixtureNewController', ['$scope', '$http', '$log', 'Toast', 'Auth', function ($scope, $http, $log, Toast, Auth) {
-  // yes, teams are static, give me a break
+var fixtureNewController = app.controller('fixtureNewController', ['$scope', '$http', '$location', 'Toast', 'Auth', function ($scope, $http, $location, Toast, Auth) {
+  // yes, teams are hard-coded, give me a break
   // i'll migrate it to Firebase when i can
   $scope.teams = ['Arsenal',
                   'Aston-Villa',
@@ -29,8 +29,6 @@ var fixtureNewController = app.controller('fixtureNewController', ['$scope', '$h
     time: '',
     fixture_time: ''
   };
-
-  $http.get('api/fixtures');
 
   this.save = function () {
     // there has to be a better way!!!

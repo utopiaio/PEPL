@@ -9,9 +9,9 @@ var app = angular.module('pepl', ['ngRoute',
 
 
 
-app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $mdSidenav, Auth, xhrInProgress) {
+app.controller('appController', ['$rootScope', '$http', '$location', '$timeout', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $timeout, $mdSidenav, Auth, xhrInProgress) {
   xhrInProgress.listenToXHR();
-  $rootScope.showFab = true;
+  $rootScope.showFab = false;
 
   $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {
     console.error(rejection);
@@ -25,13 +25,16 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
 
   $rootScope.$on('$routeChangeSuccess', function (event, target) {
     $rootScope.showFab = (target.$$route && target.$$route.originalPath !== '/login');
-    $('md-list.main-menu md-item button').removeClass('active');
 
     // menu activation based on the, the good ol' switch!
     if (target.$$route) {
       switch (target.$$route.originalPath) {
         case '/':
           $('button[menu-target="fixtures"]').addClass('active');
+        break;
+
+        case '/season':
+          $('button[menu-target="season"]').addClass('active');
         break;
       }
     }
@@ -47,7 +50,14 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$mdSidenav
 
   this.navigateTo = function (url) {
     $rootScope.appController.closeMenu();
-    url === 'logout' ? Auth.logout() : $location.path(url);
+    if (url === 'logout') {
+      $rootScope.showFab = false;
+    }
+
+    // giving the time out makes sure the animation doesn't become "weired"
+    $timeout(function () {
+      url === 'logout' ? Auth.logout() : $location.path(url);
+    }, 250);
   };
 
   $rootScope.appController = this;
@@ -91,7 +101,7 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
     }
   })
 
-  .when('/new', {
+  .when('/fixture/new', {
     templateUrl: 'views/fixture-new.html',
     controller: 'fixtureNewController',
     resolve: {
@@ -102,6 +112,14 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
   .when('/players', {
     templateUrl: 'views/players.html',
     controller: 'playersController',
+    resolve: {
+      loggedIn: AuthProvider.isLoggedIn
+    }
+  })
+
+  .when('/season', {
+    templateUrl: 'views/season.html',
+    controller: 'seasonController',
     resolve: {
       loggedIn: AuthProvider.isLoggedIn
     }
