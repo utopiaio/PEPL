@@ -1,5 +1,5 @@
 module.exports = function (dependency) {
-  var client = dependency.client,
+  var pgClient = dependency.pgClient,
       emailTransporter = dependency.emailTransporter,
       emailConfig = dependency.emailConfig,
       sessionStore = dependency.sessionStore,
@@ -13,17 +13,11 @@ module.exports = function (dependency) {
          * but it'll keep out the Mitches out for at-least a second :)
          * and not to mention Dyno --- 720
          */
-        console.log(request.session);
-        console.log(sessionStore);
-
         if (request.session.blockForAWeek === true) {
           response.status(403);
           response.json({});
         } else {
-          client.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1.sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function (error, result) {
-            response.status(error === null ? 202 : 409);
-            response.json({});
-
+          pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function (error, result) {
             if (error === null) {
               var mailOptions = {
                 from: emailConfig.from,
@@ -38,7 +32,11 @@ module.exports = function (dependency) {
               });
 
               request.session.blockForAWeek = true;
-              console.log(request.session);
+              response.status(error === null ? 202 : 409);
+              response.json({});
+            } else {
+              response.status(400);
+              response.json({});
             }
           });
         }

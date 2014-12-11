@@ -1,6 +1,6 @@
 module.exports = function (dependency) {
-  var client = dependency.client;
-  var sha1 = dependency.sha1;
+  var pgClient = dependency.pgClient,
+      sha1 = dependency.sha1;
 
   return function (request, response, next) {
     switch(request.method) {
@@ -26,7 +26,7 @@ module.exports = function (dependency) {
        * which can be accessed via Auth.info()
        */
       case 'POST':
-        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE (player_username=$1 OR player_email=$1) AND player_password=$2 AND player_suspended=$3', [request.body.ID.toLowerCase(), sha1.sha1(String(request.body.password)), false], function (error, result) {
+        pgClient.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE (player_username=$1 OR player_email=$1) AND player_password=$2 AND player_suspended=$3', [request.body.ID.toLowerCase(), sha1(String(request.body.password)), false], function (error, result) {
           if (error) {
             response.status(409);
             response.json({});
