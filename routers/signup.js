@@ -2,6 +2,7 @@ module.exports = function (dependency) {
   var client = dependency.client,
       emailTransporter = dependency.emailTransporter,
       emailConfig = dependency.emailConfig,
+      sessionStore = dependency.sessionStore,
       sha1 = dependency.sha1;
 
   return function (request, response, next) {
@@ -12,6 +13,9 @@ module.exports = function (dependency) {
          * but it'll keep out the Mitches out for at-least a second :)
          * and not to mention Dyno --- 720
          */
+        console.log(request.session);
+        console.log(sessionStore);
+
         if (request.session.blockForAWeek === true) {
           response.status(403);
           response.json({});
@@ -25,13 +29,16 @@ module.exports = function (dependency) {
                 from: emailConfig.from,
                 to: emailConfig.adminEmail,
                 subject: 'New User',
-                text: 'approve or decline this Mitch',
-                html: 'approve or decline this Mitch'
+                text: 'approve or decline a Mitch',
+                html: 'approve or decline a Mitch'
               };
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
                 console.log(error === null ? info : error);
               });
+
+              request.session.blockForAWeek = true;
+              console.log(request.session);
             }
           });
         }

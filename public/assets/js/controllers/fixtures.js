@@ -7,5 +7,9 @@ var fixturesController = app.controller('fixturesController', ['$scope', '$http'
       $scope.fixtures = [];
     });
 
+  this.activate = function () {
+    console.log('activate');
+  };
+
   $scope.fixturesController = this;
 }]);

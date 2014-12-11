@@ -60,6 +60,20 @@
 .x-ng-cloak {
   display: none !important;
 }
+
+.animate-prediction-form.ng-hide-add.ng-hide-add-active {
+  -webkit-animation: 0.25s fadeOutUp;
+  animation: 0.25s fadeOutUp;
+}
+
+.animate-prediction-form.ng-hide-remove.ng-hide-remove-active {
+  -webkit-animation: 0.25s fadeInDown;
+  animation: 0.25s fadeInDown;
+}
+
+.animate-prediction-form.ng-hide {
+  opacity: 0;
+}
 /* Angular.js: END -----------------------------------------------------------*/
 
 
@@ -103,6 +117,10 @@ md-input-group.input-search {
   margin: 0;
 }
 
+md-input-group.input-sm > label{
+  font-size: 80%;
+}
+
 md-input-group.input-block input,
 input.input-block,
 select.input-block {
@@ -135,6 +153,11 @@ button.btn-block {
 
 button.btn-lg {
   padding: 12px;
+}
+
+button.btn-padding-left-right {
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 .md-fab-fixed-bottom-right {
