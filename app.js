@@ -45,8 +45,8 @@ var emailTransporter = nodemailer.createTransport({
   auth: emailConfig.auth
 });
 
-var client = new pg.Client(process.env.DATABASE_URL || 'tcp://postgres:password@127.0.0.1:5432/pepl');
-client.connect();
+var pgClient = new pg.Client(process.env.DATABASE_URL || 'tcp://postgres:password@127.0.0.1:5432/pepl');
+pgClient.connect();
 
 var app = express();
 app.set('port', process.env.PORT || 8000);
@@ -55,7 +55,7 @@ app.use(serveFavicon(path.join(__dirname, 'public/assets/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(expressSession({
   name: 'pepl',
-  store: sessionStore,
+  // store: sessionStore,
   secret: cookieSignature,
   cookie: {
     maxAge: 604800000, // 7 days
@@ -73,12 +73,127 @@ app.use(bodyParser.urlencoded({
 
 
 
-/**
- * am exporting route handlers - i don't know it it's "acceptable"
- * or not, but for now it keeps my code "modular" :)
- */
-app.use('/api/login', login({client: client, sha1: sha1}));
-app.use('/api/signup', signup({client: client, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
+app.use('/api/login', function (request, response, next) {
+  switch(request.method) {
+    /**
+     * tells the status of the current user
+     * if session is found, current info is returned
+     * which can be accessed via Auth.info()
+     */
+    case 'GET':
+      response.status(request.session.loggedIn === true ? 200 : 412);
+      response.json(request.session.loggedIn === true ? {
+        player_id: request.session.player_id,
+        player_username: request.session.player_username,
+        player_email: request.session.player_email,
+        player_type: request.session.player_type,
+        player_suspended: request.session.player_suspended
+      } : {});
+    break;
+
+    /**
+     * login request
+     * if it's all good, session is created and info is returned
+     * which can be accessed via Auth.info()
+     */
+    case 'POST':
+      pgClient.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE (player_username=$1 OR player_email=$1) AND player_password=$2 AND player_suspended=$3', [request.body.ID.toLowerCase(), sha1(String(request.body.password)), false], function (error, result) {
+        if (error) {
+          response.status(409);
+          response.json({});
+        } else {
+          if (result.rowCount === 1) {
+            request.session.loggedIn = true;
+            request.session.player_id = result.rows[0].player_id;
+            request.session.player_username = result.rows[0].player_username;
+            request.session.player_email = result.rows[0].player_email;
+            request.session.player_type = result.rows[0].player_type;
+            request.session.player_suspended = result.rows[0].player_suspended;
+
+            response.status(200);
+            response.json({
+              player_id: result.rows[0].player_id,
+              player_username: result.rows[0].player_username,
+              player_email: result.rows[0].player_email,
+              player_type: result.rows[0].player_type,
+              player_suspended: result.rows[0].player_suspended
+            });
+          } else {
+            response.status(401);
+            response.json({});
+          }
+        }
+      });
+    break;
+
+    /**
+     * logout
+     */
+    case 'DELETE':
+      if (request.session.loggedIn === true) {
+        delete request.session.loggedIn;
+        response.status(202);
+      } else {
+        response.status(401);
+      }
+
+      response.json({});
+    break;
+
+    default:
+      response.status(405);
+      response.json({});
+    break;
+  }
+});
+
+
+
+// app.use('/api/signup', signup({client: client, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
+app.use('/api/signup', function (request, response, next) {
+  switch(request.method) {
+    case 'POST':
+      /**
+       * this measure is next to nothing
+       * but it'll keep out the Mitches out for at-least a second :)
+       * and not to mention Dyno --- 720
+       */
+
+      console.log(request.session);
+
+      if (request.session.blockForAWeek === true) {
+        response.status(403);
+        response.json({});
+      } else {
+        pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function (error, result) {
+          response.status(error === null ? 202 : 409);
+          response.json({});
+
+          if (error === null) {
+            console.log('setting...');
+            request.session.blockForAWeek = true;
+            var mailOptions = {
+              from: emailConfig.from,
+              to: emailConfig.adminEmail,
+              subject: 'New User',
+              text: 'approve or decline a Mitch',
+              html: 'approve or decline a Mitch'
+            };
+
+            emailTransporter.sendMail(mailOptions, function (error, info) {
+              console.log(error === null ? info : error);
+            });
+          }
+        });
+      }
+    break;
+
+    default:
+      response.status(405);
+      response.json({});
+    break;
+  }
+});
 
 
 
@@ -97,8 +212,8 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 
 
 
-app.use('/api/players/:id?/:status?', players({client: client, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
-app.use('/api/fixtures/:id?', fixtures({client: client}));
+app.use('/api/players/:id?/:status?', players({client: pgClient, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
+app.use('/api/fixtures/:id?', fixtures({client: pgClient}));
 
 
 
