@@ -94,7 +94,7 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 
 
 app.use('/api/players/:id?', players({pgClient: pgClient, emailTransporter: emailTransporter, emailConfig: emailConfig}));
-app.use('/api/fixtures/:id?', fixtures({client: pgClient}));
+app.use('/api/fixtures/:id?', fixtures({pgClient: pgClient}));
 
 
 
