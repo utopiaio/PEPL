@@ -1,8 +1,8 @@
 module.exports = function (dependency) {
   var pgClient = dependency.pgClient,
       moment = dependency.moment,
-      BAD_REQUEST = function () {
-        response.status(400);
+      BAD_REQUEST = function (STATUSCODE) {
+        response.status(STATUSCODE);
         response.json({});
       };
 
@@ -73,15 +73,15 @@ module.exports = function (dependency) {
                       response.status(200);
                       response.json(coolPredictions);
                     } else {
-                      BAD_REQUEST();
+                      BAD_REQUEST(400);
                     }
                   });
                 } else {
-                  BAD_REQUEST();
+                  BAD_REQUEST(400);
                 }
               });
             } else {
-              BAD_REQUEST();
+              BAD_REQUEST(400);
             }
           });
         } else {
@@ -110,8 +110,7 @@ module.exports = function (dependency) {
             if (error === null) {
               if (result.rowCount === 1) {
                 if (moment().add(30, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(1, 'days'))) {
-                  response.status(408);
-                  response.json({});
+                  BAD_REQUEST(408);
                 } else {
                   pgClient.query('INSERT INTO predictions (prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp) VALUES ($1, $2, $3, $4, $5) RETURNING prediction_id, prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp;', [request.body.prediction_fixture, request.session.player_id, request.body.prediction_home_team, request.body.prediction_away_team, moment().toDate()], function (error, result) {
                     response.status(error === null ? 202 : 409);
@@ -119,21 +118,19 @@ module.exports = function (dependency) {
                   });
                 }
               } else {
-                response.status(404);
-                response.json({});
+                BAD_REQUEST(404);
               }
             } else {
-              BAD_REQUEST();
+              BAD_REQUEST(400);
             }
           });
         } else {
-          BAD_REQUEST();
+          BAD_REQUEST(400);
         }
       break;
 
       default:
-        response.status(405);
-        response.json({});
+        BAD_REQUEST(405);
       break;
     }
   };
