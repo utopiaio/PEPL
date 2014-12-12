@@ -11,31 +11,41 @@ module.exports = function (dependency) {
      * new player is created at /api/signup
      */
     switch(request.method) {
+      /**
+       *
+       * 200 --- accepted
+       * 400 --- bad request
+       * 403 --- unauthorized attempt to access someone else's data
+       * 404 --- trying to access player's info that doesn't exist
+       */
       case 'GET':
         if (request.params.id === undefined) {
-          // returning ALL PLAYERS
           pgClient.query('SELECT player_id, player_username, player_suspended, player_type FROM players;', [], function (error, result) {
-            response.status(error === null ? 200 : 406);
+            response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : []);
           });
         } else if (request.session.player_id === Number(request.params.id)) {
-          // FULL player info is returned IFF the user requesting the info is the OWNER
           pgClient.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE player_id=$1;', [request.params.id], function (error, result) {
             response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
           });
         } else {
-          // player trying to access someone's else info
           response.status(403);
           response.json({})
         }
       break;
 
+      /**
+       * 202 --- accepted, player updated
+       * 400 --- BAD request
+       * 401 --- non-admin user trying to do shit
+       * 404 --- trying to update a player that doesn't exist
+       */
       case 'PUT':
         if (request.session.player_type === 'ADMINISTRATOR') {
           // someone needs to look after you mitches!
           pgClient.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_suspended, player_type;', [request.body.player_suspended, request.params.id], function (error, result) {
-            response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 400);
+            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
 
             if (result && result.rowCount === 1) {
@@ -58,10 +68,16 @@ module.exports = function (dependency) {
         }
       break;
 
+      /**
+       * 202 --- accepted, player deleted
+       * 400 --- BAD, something horrible has happened
+       * 401 --- unauthorized
+       * 404 --- trying to delete a player that's not in the "list"
+       */
       case 'DELETE':
         if (request.session.player_type === 'ADMINISTRATOR') {
           pgClient.query('DELETE FROM players where player_id=$1', [request.params.id], function (error, result) {
-            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 406);
+            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
             response.json({});
           });
         } else {

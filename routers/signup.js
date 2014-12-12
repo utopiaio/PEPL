@@ -12,9 +12,19 @@ module.exports = function (dependency) {
          * this measure is next to nothing
          * but it'll keep out the Mitches out for at-least a second :)
          * and not to mention Dyno --- 720
+         *
+         * 202 --- accepted
+         * 403 --- blocked for a week
+         * 409 --- conflict, username or password taken
+         * 400 --- bad request
+         * 406 --- invalid input
          */
+
         if (request.session.blockForAWeek === true) {
           response.status(403);
+          response.json({});
+        } else if (request.body.player_username.length < 3 || request.body.player_password < 3 || request.body.player_email.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1) {
+          response.status(406);
           response.json({});
         } else {
           pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function (error, result) {

@@ -19,6 +19,9 @@ module.exports = function (dependency) {
        * returns all predictions that are time-locked
        * also returns predictions of the CURRENT player --- ONLY for viewing
        * PUT request is not acceptable here :)
+       *
+       * 200 --- accepted
+       * 400 --- bad
        */
       case 'GET':
         var players = [],
@@ -85,11 +88,11 @@ module.exports = function (dependency) {
       /**
        * this is where the "time-lock" happens!
        *
+       * 202 --- it's all good
        * 400 --- bad request
        * 404 --- prediction fixture doesn't exist
        * 408 --- sending prediction after time lock
        * 409 --- trying to "change" a prediction
-       * 202 --- it's all good
        */
       case 'POST':
         pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.body.prediction_fixture], function (error, result) {

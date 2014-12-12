@@ -27,6 +27,7 @@ var signup = require('./routers/signup');
 var players = require('./routers/players');
 var fixtures = require('./routers/fixtures');
 var predictions = require('./routers/predictions');
+var wall = require('./routers/wall');
 
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
@@ -98,6 +99,7 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 app.use('/api/players/:id?', players({pgClient: pgClient, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 app.use('/api/fixtures/:id?', fixtures({pgClient: pgClient}));
 app.use('/api/predictions', predictions({pgClient: pgClient, moment: moment}));
+app.use('/api/wall', wall({pgClient: pgClient, sockets: sockets}));
 
 
 
