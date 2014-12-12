@@ -124,11 +124,7 @@ io.use(socketHandshake({
 
 // yet another middle fellow that authenticates session
 io.use(function(socket, next) {
-  if (socket.handshake.session.loggedIn === true) {
-    next();
-  } else {
-    next(new Error('not authorized'));
-  }
+  socket.handshake.session.loggedIn === true ? next() : next(new Error('not authorized'));
 });
 
 // if a socket connection has established connection that means it's legit
