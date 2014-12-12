@@ -103,8 +103,8 @@ module.exports = function (dependency) {
        */
       case 'POST':
         if (typeof request.body.prediction_home_team === 'number' && typeof request.body.prediction_away_team === 'number') {
-          request.body.prediction_home_team = Math.floor(request.body.prediction_home_team);
-          request.body.prediction_away_team = Math.floor(request.body.prediction_away_team);
+          request.body.prediction_home_team = Math.abs(Math.floor(request.body.prediction_home_team));
+          request.body.prediction_away_team = Math.abs(Math.floor(request.body.prediction_away_team));
 
           pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.body.prediction_fixture], function (error, result) {
             if (error === null) {
