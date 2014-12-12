@@ -85,7 +85,7 @@ module.exports = function (dependency) {
             }
           });
         } else {
-          pgClient.query('SELECT prediction_id, prediction_fixture, prediction_player FROM predictions;', [], function (error, result) {
+          pgClient.query('SELECT prediction_fixture, prediction_player FROM predictions;', [], function (error, result) {
             response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : []);
           });
