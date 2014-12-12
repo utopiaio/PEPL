@@ -19,12 +19,14 @@ var nodemailer = require('nodemailer');
 var socket = require('socket.io');
 var sessionStore = require('sessionstore').createSessionStore(); // Memory
 var socketHandshake = require('socket.io-handshake');
+var moment = require('moment');
 var sha1 = require('./lib/cyper');
 
 var login = require('./routers/login');
 var signup = require('./routers/signup');
 var players = require('./routers/players');
 var fixtures = require('./routers/fixtures');
+var predictions = require('./routers/predictions');
 
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
@@ -95,6 +97,7 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 
 app.use('/api/players/:id?', players({pgClient: pgClient, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 app.use('/api/fixtures/:id?', fixtures({pgClient: pgClient}));
+app.use('/api/predictions', predictions({pgClient: pgClient, moment: moment}));
 
 
 
