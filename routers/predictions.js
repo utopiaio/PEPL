@@ -24,65 +24,72 @@ module.exports = function (dependency) {
        * 400 --- bad
        */
       case 'GET':
-        var players = [],
-            fixtures = [],
-            predictions = [],
-            coolPredictions = [];
+        if (request.params.anonymous === undefined) {
+          var players = [],
+              fixtures = [],
+              predictions = [],
+              coolPredictions = [];
 
-        pgClient.query('SELECT player_id, player_username, player_suspended FROM players;', [], function (error, result) {
-          if (error === null) {
-            players = result.rows;
+          pgClient.query('SELECT player_id, player_username, player_suspended FROM players;', [], function (error, result) {
+            if (error === null) {
+              players = result.rows;
 
-            pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures;', [], function (error, result) {
-              if (error === null) {
-                fixtures = result.rows;
+              pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures;', [], function (error, result) {
+                if (error === null) {
+                  fixtures = result.rows;
 
-                pgClient.query('SELECT prediction_id, prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp FROM predictions;', [], function (error, result) {
-                  if (error === null) {
-                    predictions = result.rows;
-                    var iPredictions = 0,
-                        lPredictions = result.rows.length,
-                        iPlayers = 0,
-                        lPlayers = players.length,
-                        iFixtures = 0,
+                  pgClient.query('SELECT prediction_id, prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp FROM predictions;', [], function (error, result) {
+                    if (error === null) {
+                      predictions = result.rows;
+                      var iPredictions = 0,
+                          lPredictions = result.rows.length,
+                          iPlayers = 0,
+                          lPlayers = players.length,
+                          iFixtures = 0,
+                          lFixtures = fixtures.length;
+
+                      for (; iPredictions < lPredictions; iPredictions++) {
+                        iFixtures = 0;
                         lFixtures = fixtures.length;
+                        for (; iFixtures < lFixtures; iFixtures++) {
+                          if (fixtures[iFixtures].fixture_id === predictions[iPredictions].prediction_fixture) {
+                            predictions[iPredictions].prediction_fixture = fixtures[iFixtures];
+                          }
+                        }
 
-                    for (; iPredictions < lPredictions; iPredictions++) {
-                      iFixtures = 0;
-                      lFixtures = fixtures.length;
-                      for (; iFixtures < lFixtures; iFixtures++) {
-                        if (fixtures[iFixtures].fixture_id === predictions[iPredictions].prediction_fixture) {
-                          predictions[iPredictions].prediction_fixture = fixtures[iFixtures];
+                        iPlayers = 0;
+                        lPlayers = players.length;
+                        for (; iPlayers < lPlayers; iPlayers++) {
+                          if (predictions[iPredictions].prediction_player === players[iPlayers].player_id) {
+                            predictions[iPredictions].prediction_player = players[iPlayers];
+                          }
+                        }
+
+                        if (moment(predictions[iPredictions].prediction_timestamp).add(30, 'minutes').isAfter(moment(predictions[iPredictions].prediction_fixture.fixture_time)) || predictions[iPredictions].prediction_player === request.session.player_id) {
+                          coolPredictions.push(predictions[iPredictions]);
                         }
                       }
 
-                      iPlayers = 0;
-                      lPlayers = players.length;
-                      for (; iPlayers < lPlayers; iPlayers++) {
-                        if (predictions[iPredictions].prediction_player === players[iPlayers].player_id) {
-                          predictions[iPredictions].prediction_player = players[iPlayers];
-                        }
-                      }
-
-                      if (moment(predictions[iPredictions].prediction_timestamp).add(30, 'minutes').isAfter(moment(predictions[iPredictions].prediction_fixture.fixture_time)) || predictions[iPredictions].prediction_player === request.session.player_id) {
-                        coolPredictions.push(predictions[iPredictions]);
-                      }
+                      response.status(200);
+                      response.json(coolPredictions);
+                    } else {
+                      BAD_REQUEST();
                     }
-
-                    response.status(200);
-                    response.json(coolPredictions);
-                  } else {
-                    BAD_REQUEST();
-                  }
-                });
-              } else {
-                BAD_REQUEST();
-              }
-            });
-          } else {
-            BAD_REQUEST();
-          }
-        });
+                  });
+                } else {
+                  BAD_REQUEST();
+                }
+              });
+            } else {
+              BAD_REQUEST();
+            }
+          });
+        } else {
+          pgClient.query('SELECT prediction_id, prediction_fixture, prediction_player FROM predictions;', [], function (error, result) {
+            response.status(error === null ? 200 : 400);
+            response.json(error === null ? result.rows : []);
+          });
+        }
       break;
 
       /**
