@@ -174,18 +174,6 @@ button.btn-padding-left-right {
   padding: 4px 15px;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
-/*
-md-item div.action.ng-hide-add {
-  -webkit-animation: 0.5s fadeOut;
-  animation: 0.5s fadeOut;
-}
-
-md-item div.action.ng-hide-remove {
-  -webkit-animation: 0.5s fadeIn;
-  animation: 0.5s fadeIn;
-}
-*/
 /* material customization: END -----------------------------------------------*/
 
 
