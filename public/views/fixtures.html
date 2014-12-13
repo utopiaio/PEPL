@@ -87,7 +87,7 @@
               <!-- end: time -->
 
               <!-- hover/swipe action -->
-              <div class="action" ng-show="fixture.showAction === true" >
+              <div class="action animate-if" ng-if="fixture.showAction === true" >
                 <div layout="row" layout-align="space-around center" layout-fill>
                   <div flex-lg="30" flex-gt-lg="30"></div>
 
@@ -139,7 +139,7 @@
                 class="animate-if"
                 layout="column"
                 layout-fill
-                ng-show="fixture.showForm === true">
+                ng-if="fixture.showForm === true">
             <div layout="row">
               <div flex-sm="5"
                    flex-gt-sm="5"
