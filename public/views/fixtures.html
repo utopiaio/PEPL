@@ -34,7 +34,7 @@
                 </div>
 
                 <!-- pre-match -->
-                <div flex layout="row"
+                <div flex="25" layout="row"
                      layout-align="space-around center"
                      ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === undefined">
                   <h3>Vs</h3>
@@ -42,9 +42,9 @@
                 <!-- end: pre-match -->
 
                 <!-- lock -->
-                <div flex layout="row"
+                <div flex="25" layout="row"
                      layout-align="space-around center"
-                     ng-if="fixture.lock === true">
+                     ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === true">
                   <i class="ion-ios7-locked-outline icon-lg"></i>
                 </div>
                 <!-- end: lock -->

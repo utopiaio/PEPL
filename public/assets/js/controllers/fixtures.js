@@ -30,14 +30,14 @@
             // if payer already predicted for fixture
             // we'll set the lock "mode" on
             for (i = 0; i < l; i++) {
-              if (anonymousPredictions[i].prediction_fixture === data[key].fixture_id && anonymousPredictions[i].prediction_player === currentUser.player_id) {
+              if (anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === currentUser.player_id) {
                 data[key].lock = true;
                 break;
               }
             }
 
-            // if fixture time is within 30 minutes
-            // we'll also set the lock "mode" on
+            // if fixture time is less than 30 minutes away
+            // we'll set the lock "mode" on
             // you can try --- BUT good luck passing though my security check
             // muhahahahahahah
             if (moment().add(30, 'minutes').isAfter(data[key].fixture_time) === true) {
