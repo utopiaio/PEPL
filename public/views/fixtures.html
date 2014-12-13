@@ -16,12 +16,12 @@
   <md-content>
     <md-list>
 
-      <md-item ng-repeat="fixture in fixtures | filter:showInToday | filter:search | orderBy:'unixEpoch':true"
+      <md-item ng-repeat="fixture in fixtures | filter:showInToday:strict | filter:search | orderBy:'unixEpoch':true"
                ng-swipe-right="fixture.showAction = false;"
                ng-swipe-left="fixture.showAction = true;"
                ng-mouseenter="fixture.showAction = true;"
                ng-mouseleave="fixture.showAction = false;"
-               ng-init="fixture.showForm = false;" >
+               ng-init="fixture.showForm = false; fixture.showAdminForm = false;">
 
           <md-item-content>
             <div class="md-tile-content">
@@ -64,7 +64,10 @@
                   <h2>-</h2>
                 </div>
 
-                <div flex="10" layout="row" layout-align="start center" ng-if="fixture.fixture_team_home_score > -1">
+                <div flex="10"
+                     layout="row"
+                     layout-align="start center"
+                     ng-if="fixture.fixture_team_home_score > -1">
                   <h2 ng-bind="fixture.fixture_team_away_score"></h2>
                 </div>
                 <!-- end: post-match -->
@@ -84,11 +87,14 @@
               <!-- end: time -->
 
               <!-- hover/swipe action -->
-              <div class="action" ng-show="fixture.showAction === true && fixture.fixture_team_home_score === -1 && fixture.lock === undefined" >
+              <div class="action" ng-show="fixture.showAction === true" >
                 <div layout="row" layout-align="space-around center" layout-fill>
                   <div flex-lg="30" flex-gt-lg="30"></div>
 
-                  <div flex layout="row" layout-align="space-around center" ng-if="fixture.showForm === false;">
+                  <div flex
+                       layout="row"
+                       layout-align="space-around center"
+                       ng-if="fixture.showForm === false && fixture.fixture_team_home_score === -1 && fixture.lock === undefined">
                     <md-button ng-click="fixture.showForm = true;"
                                ng-disabled="xhrInProgress"
                                aria-label="activate player"
@@ -97,8 +103,23 @@
                     </md-button>
                   </div>
 
-                  <div flex layout="row" layout-align="space-around center" ng-if="fixture.showForm === true;">
-                    <md-button ng-click="fixture.showForm = false;"
+                  <div flex
+                       layout="row"
+                       layout-align="space-around center"
+                       ng-if="fixture.showAdminForm === false && fixture.gameIsOver === true && currentUser.player_type === 'ADMINISTRATOR'">
+                    <md-button ng-click="fixture.showAdminForm = true;"
+                               ng-disabled="xhrInProgress"
+                               aria-label="activate player"
+                               class="md-fab md-primary" >
+                      <i class="ion-ios7-locked-outline icon-lg"></i>
+                    </md-button>
+                  </div>
+
+                  <div flex
+                       layout="row"
+                       layout-align="space-around center"
+                       ng-if="fixture.showForm === true || fixture.showAdminForm === true">
+                    <md-button ng-click="fixture.showAdminForm = false; fixture.showForm = false;"
                                ng-disabled="xhrInProgress"
                                aria-label="activate player"
                                class="md-fab md-warn" >
@@ -114,7 +135,11 @@
           </md-item-content>
 
           <!-- prediction submit form -->
-          <form name="predictionForm" layout="column" layout-fill ng-show="fixture.showForm && fixture.lock === undefined" class="animate-prediction-form">
+          <form name="predictionForm"
+                class="animate-if"
+                layout="column"
+                layout-fill
+                ng-show="fixture.showForm === true">
             <div layout="row">
               <div flex-sm="5"
                    flex-gt-sm="5"
@@ -167,10 +192,69 @@
           </form>
           <!-- end: prediction submit form -->
 
+          <!-- fixture final result -->
+          <form name="closeGameForm"
+                class="animate-if"
+                layout="column"
+                layout-fill
+                ng-if="fixture.showAdminForm === true">
+            <div layout="row">
+              <div flex-sm="5"
+                   flex-gt-sm="5"
+                   flex-md="5"
+                   flex-gt-md="5"
+                   flex-lg="20"
+                   flex-gt-lg="20"></div>
+
+              <div flex layout="row" layout-align="center center">
+                <div flex layout="row" layout-align="center center">
+                  <md-text-float type="number"
+                                 name="home_final_score"
+                                 class="input-sm input-block"
+                                 label="{{ fixture.fixture_team_home }}"
+                                 ng-model="fixture.fixture_team_home_score"
+                                 required></md-text-float>
+                </div>
+
+                <div flex-sm="5"
+                     flex-gt-sm="5"
+                     flex-md="5"
+                     flex-gt-md="5"></div>
+
+                <div flex layout="row" layout-align="center center">
+                  <md-text-float type="number"
+                                 name="away_final_prediction"
+                                 class="input-sm input-block"
+                                 label="{{ fixture.fixture_team_away }}"
+                                 ng-model="fixture.fixture_team_away_score"
+                                 required></md-text-float>
+                </div>
+              </div>
+
+              <div flex-sm="5"
+                   flex-gt-sm="5"
+                   flex-md="5"
+                   flex-gt-md="5"
+                   flex-lg="20"
+                   flex-gt-lg="20"></div>
+            </div>
+
+            <div layout="row" layout-align="space-around center">
+              <div>
+                <md-button type="button"
+                           ng-disabled="xhrInProgress || closeGameForm.$invalid"
+                           class="md-primary md-raised btn-block btn-padding-left-right"
+                           ng-click="fixturesController.matchFinalResult(fixture);">close game</md-button>
+              </div>
+            </div>
+          </form>
+          <!-- end: fixture final result -->
+
           <md-divider></md-divider>
       </md-item>
 
     </md-list>
   </md-content>
 
+  <div class="fab-height"></div>
 </div>

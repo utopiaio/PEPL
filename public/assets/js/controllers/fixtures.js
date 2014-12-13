@@ -5,6 +5,7 @@
     // filter object to be used to show fixtures that are happening/ed in the
     // next/past 24 hours
     $scope.showInToday = {showInToday: true};
+    $scope.currentUser = Auth.info();
 
     var loadPredictionsAnonymously = function () {
       var deferred = $q.defer();
@@ -20,8 +21,7 @@
     };
 
     loadPredictionsAnonymously().then(function (anonymousPredictions) {
-      var currentUser = Auth.info(),
-          i = 0,
+      var i = 0,
           l = anonymousPredictions.length;
 
       $http.get('api/fixtures')
@@ -30,7 +30,7 @@
             // if payer already predicted for fixture
             // we'll set the lock "mode" on
             for (i = 0; i < l; i++) {
-              if (anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === currentUser.player_id) {
+              if (anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === $scope.currentUser.player_id) {
                 data[key].lock = true;
                 break;
               }
@@ -50,6 +50,16 @@
             var dMinus24 = moment(data[key].fixture_time).subtract(1, 'day'),
                 dPlus24 = moment(data[key].fixture_time).add(1, 'day');
             data[key].showInToday = moment().isAfter(dMinus24) && moment().isBefore(dPlus24);
+            /**
+             * 45 minutes - first half
+             * 1 minute - minimum stoppage time
+             * 15 minutes - half time break
+             * 45 minutes - second half
+             * 1 minute - minimum stoppage time
+             * grand total of...drum roll
+             * 107 minutes
+             */
+            data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
             data[key].humanFormat = moment(data[key].fixture_time).format('MMMM DD, YYYY @ hh:mm A');
             data[key].predictions = {
               prediction_fixture: data[key].fixture_id,
@@ -76,8 +86,6 @@
        *
        * since the server does the finial validation, it's all good --- for now
        */
-      var toast = '<md-toast><span flex>i got nothing!</span></md-toast>';
-
       $http.post('api/predictions', fixture.predictions)
         .success(function (data, status) {
           angular.forEach($scope.fixtures, function (value, key) {
@@ -91,20 +99,61 @@
           Toast.show({template: '<md-toast><span flex>prediction submitted</span></md-toast>'});
         })
         .error(function (data, status) {
+          var toast = '<md-toast><span flex>i got nothing!</span></md-toast>';
+
           if (status === 400) {
-            var toast = '<md-toast><span flex>that was just HORRIBLE!</span></md-toast>';
+            toast = '<md-toast><span flex>that was just HORRIBLE!</span></md-toast>';
           } else if (status === 404) {
-            var toast = '<md-toast><span flex>i don\'t know how you did that, but don\'t do it again!</span></md-toast>';
+            toast = '<md-toast><span flex>i don\'t know how you did that, but don\'t do it again!</span></md-toast>';
           } else if (status === 408) {
-            var toast = '<md-toast><span flex>too late Mitch!</span></md-toast>';
+            toast = '<md-toast><span flex>too late Mitch!</span></md-toast>';
           } else if (status === 409) {
-            var toast = '<md-toast><span flex>prediction ALREADY submitted!</span></md-toast>';
+            toast = '<md-toast><span flex>prediction ALREADY submitted!</span></md-toast>';
           }
 
           Toast.show({template: toast});
        });
     };
 
+
+
+    /**
+     * yes, am avoiding using ng-submit because pressing return seems to bypass
+     * the form validation, so it's on with the click
+     *
+     * PS
+     * this function is to be called by a MAN only
+     * rest of you Mitches stay back!
+     */
+    this.matchFinalResult = function (fixture) {
+      $http.put('api/fixtures/'+ fixture.fixture_id, fixture)
+        .success(function (data, status) {
+          angular.forEach($scope.fixtures, function (value, key) {
+            if (value.fixture_id === data.fixture_id) {
+              $scope.fixtures[key].lock = true;
+              $scope.fixtures[key].showAction = false;
+              $scope.fixtures[key].showAdminForm = false;
+            }
+          });
+
+          Toast.show({template: '<md-toast><span flex>fixture updated</span></md-toast>'});
+        })
+        .error(function (data, status) {
+          var toast = '<md-toast><span flex>i got nothing!</span></md-toast>';
+
+          if (status === 400) {
+            toast = '<md-toast><span flex>that was just HORRIBLE!</span></md-toast>';
+          } else if (status === 401) {
+            toast = '<md-toast><span flex>comeback when you\'re 21</span></md-toast>';
+          } else if (status === 404) {
+            toast = '<md-toast><span flex>fixture no-longer exits</span></md-toast>';
+          }
+
+          Toast.show({template: toast});
+        });
+    };
+
     $scope.fixturesController = this;
   }]);
+
 })();
