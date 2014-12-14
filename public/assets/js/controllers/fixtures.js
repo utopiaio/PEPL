@@ -2,6 +2,8 @@
   'use strict';
 
   var fixturesController = app.controller('fixturesController', ['$scope', '$http', '$q', 'Toast', 'Auth', function ($scope, $http, $q, Toast, Auth) {
+    scrollToTheTop();
+
     // filter object to be used to show fixtures that are happening/ed in the
     // next/past 24 hours
     $scope.showInToday = {showInToday: true};

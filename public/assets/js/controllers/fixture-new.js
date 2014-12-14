@@ -1,4 +1,6 @@
 var fixtureNewController = app.controller('fixtureNewController', ['$scope', '$http', '$location', 'Toast', 'Auth', function ($scope, $http, $location, Toast, Auth) {
+  scrollToTheTop();
+
   if (Auth.info().player_type === 'NORMAL') {
     // am just redirecting you for your own good
     // you can try but you'll only get a 401

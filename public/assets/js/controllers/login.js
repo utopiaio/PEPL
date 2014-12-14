@@ -2,6 +2,8 @@
   'use strict';
 
   var loginController = app.controller('loginController', ['$scope', '$http', '$location', 'Toast', 'Auth', function ($scope, $http, $location, Toast, Auth) {
+    scrollToTheTop();
+
     $scope.credentials = {
       ID: '',
       password: ''
