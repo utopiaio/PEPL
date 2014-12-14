@@ -246,6 +246,10 @@ i.icon-lg {
   height: 112px;
 }
 
+.moe-separator {
+  height: 12px;
+}
+
 small {
   font-size: 75%;
 }

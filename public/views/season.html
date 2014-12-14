@@ -1,1 +1,153 @@
-<h1>season</h1>
+<div layout="column">
+  <div layout="column" ng-if="currentUser.player_type === 'ADMINISTRATOR'">
+    <div class="moe-separator"></div>
+
+    <div layout="row" layout-align="center center">
+      <md-button ng-href="fixture/new"
+                 ng-disabled="xhrInProgress"
+                 aria-label="new fixture"
+                 class="md-fab md-primary" >
+        <i class="ion-ios7-plus-outline icon-lg"></i>
+      </md-button>
+    </div>
+
+    <div class="moe-separator"></div>
+  </div>
+
+  <md-content>
+    <md-list>
+
+      <md-item ng-repeat="fixture in fixtures"
+               ng-swipe-right="fixture.showAction = false;"
+               ng-swipe-left="fixture.showAction = true;"
+               ng-mouseenter="fixture.showAction = true;"
+               ng-mouseleave="fixture.showAction = false;"
+               ng-init="fixture.showAdminDeleteForm = false;"
+               ng-class="{'scrollTo': fixture.scrollTo === true}">
+
+          <md-item-content>
+            <div class="md-tile-content">
+              <div layout="row" layout-align="space-around center" layout-fill>
+                <div flex-lg="20" flex-gt-lg="20"></div>
+
+                <div flex layout="column" layout-align="space-around center">
+                  <img class="club-logo" ng-src="assets/images/teams/{{ fixture.fixture_team_home }}.png">
+                  <p class="text-center club-name">{{ fixture.fixture_team_home }}</p>
+                </div>
+
+                <!-- pre-match -->
+                <div flex="25" layout="row"
+                     layout-align="space-around center"
+                     ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === undefined">
+                  <h3>Vs</h3>
+                </div>
+                <!-- end: pre-match -->
+
+                <!-- lock -->
+                <div flex="25" layout="row"
+                     layout-align="space-around center"
+                     ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === true">
+                  <i class="ion-ios7-locked-outline icon-lg"></i>
+                </div>
+                <!-- end: lock -->
+
+                <!-- post-match -->
+                <div flex="10"
+                     layout="row"
+                     layout-align="end center"
+                     ng-if="fixture.fixture_team_home_score > -1">
+                  <h2 ng-bind="fixture.fixture_team_home_score"></h2>
+                </div>
+
+                <div flex="5"
+                     layout="row"
+                     layout-align="space-around center"
+                     ng-if="fixture.fixture_team_home_score > -1">
+                  <h2>-</h2>
+                </div>
+
+                <div flex="10"
+                     layout="row"
+                     layout-align="start center"
+                     ng-if="fixture.fixture_team_home_score > -1">
+                  <h2 ng-bind="fixture.fixture_team_away_score"></h2>
+                </div>
+                <!-- end: post-match -->
+
+                <div flex layout="column" layout-align="center center">
+                  <img class="club-logo" ng-src="assets/images/teams/{{ fixture.fixture_team_away }}.png">
+                  <p class="text-center club-name">{{ fixture.fixture_team_away }}</p>
+                </div>
+
+                <div flex-lg="20" flex-gt-lg="20"></div>
+              </div>
+
+              <!-- time -->
+              <div layout="row" layout-align="center center">
+                <h4 ng-bind="fixture.humanFormat"></h4>
+              </div>
+              <!-- end: time -->
+
+              <!-- hover/swipe action -->
+              <div class="action animate-if"
+                   ng-if="fixture.showAction === true && currentUser.player_type === 'ADMINISTRATOR'"
+                   layout="row"
+                   layout-align="space-around center">
+
+                <div flex-lg="30" flex-gt-lg="30"></div>
+
+                <div ng-if="fixture.showAdminDeleteForm === false"
+                     flex
+                     layout="row"
+                     layout-align="center center">
+                  <md-button ng-click="fixture.showAdminDeleteForm = true;"
+                             ng-disabled="xhrInProgress"
+                             aria-label="activate player"
+                             class="md-fab md-warn" >
+                    <i class="ion-ios7-trash-outline icon-lg"></i>
+                  </md-button>
+                </div>
+
+                <div ng-if="fixture.showAdminDeleteForm === true"
+                     flex
+                     layout="row"
+                     layout-align="center center">
+                  <md-button ng-click="fixture.showAdminDeleteForm = false;"
+                             ng-disabled="xhrInProgress"
+                             aria-label="activate player"
+                             class="md-fab md-warn" >
+                    <i class="ion-ios7-close-outline icon-lg"></i>
+                  </md-button>
+                </div>
+
+                <div flex-lg="30" flex-gt-lg="30"></div>
+
+              </div>
+              <!-- end: hover/swipe action -->
+            </div>
+          </md-item-content>
+
+          <!-- fixture delete form -->
+          <div class="animate-if"
+               layout="column"
+               layout-fill
+               ng-if="fixture.showAdminDeleteForm === true">
+            <div layout="row" layout-align="center center">
+              <div>
+                <md-button type="button"
+                           ng-disabled="xhrInProgress || editFixture.$invalid"
+                           class="md-warn md-raised btn-block btn-padding-left-right"
+                           ng-swipe-right="seasonController.delete(fixture);">are you sure?</md-button>
+              </div>
+            </div>
+          </div>
+          <!-- end: fixture delete form -->
+
+          <md-divider></md-divider>
+      </md-item>
+
+    </md-list>
+  </md-content>
+
+  <div class="fab-height"></div>
+</div>

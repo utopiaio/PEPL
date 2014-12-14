@@ -1,3 +1,25 @@
+/**
+ * API summary
+ *
+ *
+ * LOGIN -----------------------------------------------------------------------
+ * GET    /login
+ * POST   /login {ID: 'ID', password: 'password'}
+ *
+ * PREDICTIONS -----------------------------------------------------------------
+ * GET    /predictions/anonymous
+ * GET    /predictions
+ * POST   /predictions {prediction_fixture: 'prediction_fixture', prediction_home_team: 'prediction_home_team', prediction_away_team: 'prediction_away_team'}
+ *
+ * FIXTURES --------------------------------------------------------------------
+ * GET    /fixtures
+ * POST   /fixtures/new
+ * PUT    /fixtures/:id {fixture}
+ * DELETE /fixtures/:id
+ *
+ *
+ */
+
 var app = angular.module('pepl', ['ngRoute',
                                   'ngAnimate',
                                   'ngTouch',
@@ -5,13 +27,34 @@ var app = angular.module('pepl', ['ngRoute',
                                   'ngAria',
                                   'moeAuth',
                                   'moeProgressMaterial',
-                                  'moeQuickToast']);
+                                  'moeQuickToast',
+                                  'moeDateTime']);
 
 
 
 app.controller('appController', ['$rootScope', '$http', '$location', '$timeout', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $timeout, $mdSidenav, Auth, xhrInProgress) {
   xhrInProgress.listenToXHR();
   $rootScope.showFab = false;
+  $rootScope.teams = ['Arsenal',
+                      'Aston-Villa',
+                      'Burnley',
+                      'Chelsea',
+                      'Crystal-Palace',
+                      'Everton',
+                      'Hull-City',
+                      'Leicester-City',
+                      'Liverpool',
+                      'Manchester-City',
+                      'Manchester-United',
+                      'Newcastle-United',
+                      'QPR',
+                      'Southampton',
+                      'Stock-City',
+                      'Sunderland',
+                      'Swansea-City',
+                      'Tottenham-Hotspur',
+                      'West-Bromwich-Albion',
+                      'West-Ham-United'];
 
   $rootScope.$on('$routeChangeError', function (event, current, previous, rejection) {
     console.error(rejection);
@@ -21,6 +64,7 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$timeout',
     // clearing all active menu
     // the designated menu will be activated on `routeChangeSuccess`
     $('md-list.main-menu md-item button').removeClass('active');
+    $('.bootstrap-datetimepicker-widget').remove();
   });
 
   $rootScope.$on('$routeChangeSuccess', function (event, target) {
@@ -71,7 +115,7 @@ app.config(function($sceDelegateProvider, AuthProvider) {
     authUrl: 'api/login',
     redirect: true,
     redicrectUrl: '/login',
-    redirectOnStatus: [412]
+    redirectOnStatus: [404, 412]
   });
 
   $sceDelegateProvider.resourceUrlWhitelist([
@@ -109,6 +153,7 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
     }
   })
 
+  /*
   .when('/players', {
     templateUrl: 'views/players.html',
     controller: 'playersController',
@@ -116,6 +161,7 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
       loggedIn: AuthProvider.isLoggedIn
     }
   })
+  */
 
   .when('/season', {
     templateUrl: 'views/season.html',

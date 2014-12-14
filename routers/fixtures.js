@@ -65,8 +65,8 @@ module.exports = function (dependency) {
 
       /**
        * 202 --- deleted
-       * 401 --- like i said, comeback when you're 21
        * 400 --- bad request
+       * 401 --- like i said, comeback when you're 21
        * 404 --- trying to delete a record that doesn't exist
        */
       case 'DELETE':
