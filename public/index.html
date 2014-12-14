@@ -136,9 +136,9 @@
     </md-sidenav>
 
     <md-button ng-click="appController.toggleMenu()"
-               ng-show="showFab"
+               ng-if="showFab"
                aria-label="toggle menu"
-               class="md-fab md-primary md-fab-fixed-bottom-right ng-show-hide" >
+               class="md-fab md-primary md-fab-fixed-bottom-right animate-if" >
       <i class="ion-navicon" style="font-size: 32px;"></i>
     </md-button>
 
