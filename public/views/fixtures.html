@@ -16,7 +16,8 @@
   <md-content>
     <md-list>
 
-      <md-item ng-repeat="fixture in fixtures | filter:showInToday:strict | filter:search | orderBy:'unixEpoch':true"
+      <!-- <md-item ng-repeat="fixture in fixtures | filter:showInToday:strict | filter:search" -->
+      <md-item ng-repeat="fixture in fixtures | filter:showInToday:strict"
                ng-swipe-right="fixture.showAction = false;"
                ng-swipe-left="fixture.showAction = true;"
                ng-mouseenter="fixture.showAction = true;"

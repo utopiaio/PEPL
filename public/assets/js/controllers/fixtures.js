@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var fixturesController = app.controller('fixturesController', ['$scope', '$http', '$q', 'Toast', 'Auth', function ($scope, $http, $q, Toast, Auth) {
+  var fixturesController = app.controller('fixturesController', ['$scope', '$http', '$q', '$filter', 'Toast', 'Auth', function ($scope, $http, $q, $filter, Toast, Auth) {
     scrollToTheTop();
 
     // filter object to be used to show fixtures that are happening/ed in the
@@ -70,7 +70,7 @@
             };
           });
 
-          $scope.fixtures = data;
+          $scope.fixtures = $filter('orderBy')(data, 'unixEpoch', false);
         })
         .error(function (data, status, headers, config) {
           $scope.fixtures = [];
