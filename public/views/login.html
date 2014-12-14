@@ -17,18 +17,20 @@
         <h2 class="form-title">SIGN IN</h2>
 
         <md-text-float class="input-block"
+                       name="username"
                        type="text"
                        label="Username or Email"
                        ng-model="credentials.ID"
                        required></md-text-float>
         <md-text-float class="input-block"
+                       name="password"
                        type="password"
                        label="Password"
                        ng-model="credentials.password"
                        required></md-text-float>
         <br>
         <md-button type="submit"
-                   ng-disabled="xhrInProgress"
+                   ng-disabled="xhrInProgress || loginForm.$invalid"
                    class="md-primary md-raised btn-block btn-lg">sing in</md-button>
       </form>
     </div>
@@ -45,23 +47,26 @@
         <h2 class="form-title">SIGN UP</h2>
 
         <md-text-float class="input-block"
+                       name="username"
                        type="text"
                        label="Username"
                        ng-model="newPlayer.player_username"
                        required></md-text-float>
         <md-text-float class="input-block"
+                       name="email"
                        type="email"
                        label="Email"
                        ng-model="newPlayer.player_email"
                        required></md-text-float>
         <md-text-float class="input-block"
+                       name="password"
                        type="password"
                        label="Password"
                        ng-model="newPlayer.player_password"
                        required></md-text-float>
         <br>
         <md-button type="submit"
-                   ng-disabled="xhrInProgress"
+                   ng-disabled="xhrInProgress || signUpForm.$invalid"
                    class="md-primary md-raised btn-block btn-lg">sing up</md-button>
       </form>
     </div>

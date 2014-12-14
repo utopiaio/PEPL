@@ -19,7 +19,6 @@ module.exports = function (dependency) {
          * 400 --- bad request
          * 406 --- invalid input
          */
-
         if (request.session.blockForAWeek === true) {
           response.status(403);
           response.json({});
@@ -42,7 +41,10 @@ module.exports = function (dependency) {
               });
 
               request.session.blockForAWeek = true;
-              response.status(error === null ? 202 : 409);
+              response.status(202);
+              response.json({});
+            } else if (error.code === '23505') {
+              response.status(409);
               response.json({});
             } else {
               response.status(400);
