@@ -250,6 +250,21 @@ i.icon-lg {
   height: 12px;
 }
 
+p.player-status {
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+p.player-status.suspended {
+  background-color: #e86741;
+}
+
+p.player-status.active {
+  background-color: #4daf7b;
+}
+
 small {
   font-size: 75%;
 }

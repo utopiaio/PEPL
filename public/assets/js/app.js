@@ -17,6 +17,11 @@
  * PUT    /fixtures/:id {fixture}
  * DELETE /fixtures/:id
  *
+ * PLAYERS (admin) -------------------------------------------------------------
+ * GET    /api/players
+ * GET    /api/players/:id
+ * PUT    /api/players/:id {player_suspended: STATUS}
+ * DELETE /api/players/:id
  *
  */
 
@@ -158,7 +163,6 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
     }
   })
 
-  /*
   .when('/players', {
     templateUrl: 'views/players.html',
     controller: 'playersController',
@@ -166,7 +170,6 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
       loggedIn: AuthProvider.isLoggedIn
     }
   })
-  */
 
   .when('/season', {
     templateUrl: 'views/season.html',
