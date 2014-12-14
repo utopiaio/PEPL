@@ -8,7 +8,6 @@
   <form role="form"
         name="newFixtureForm"
         novalidate
-        ng-submit="fixtureNewController.save()"
         autocomplete="off" >
     <h2>New Fixture</h2>
 
@@ -62,6 +61,8 @@
     <div class="form-group save-container">
       <md-button type="submit"
                  ng-disabled="xhrInProgress || newFixtureForm.$invalid || newFixture.fixture_team_home === newFixture.fixture_team_away"
+                 ng-dblclick="fixtureNewController.save()"
+                 ng-swipe-right="fixtureNewController.save()"
                  class="md-primary md-raised btn-block btn-lg">add</md-button>
     </div>
   </form>
