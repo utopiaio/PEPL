@@ -103,6 +103,20 @@
             </md-button>
           </md-item>
 
+          <md-item ng-if="iPhone === true">
+            <md-button class="md-grid-item-content"
+                       aria-label="wall"
+                       menu-target="wall"
+                       ng-click="appController.reload()">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios7-reload md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">iOS8</p>
+            </md-button>
+          </md-item>
+
           <md-item>
             <md-button class="md-grid-item-content"
                        aria-label="logout"

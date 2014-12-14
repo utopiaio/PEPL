@@ -32,9 +32,10 @@ var app = angular.module('pepl', ['ngRoute',
 
 
 
-app.controller('appController', ['$rootScope', '$http', '$location', '$timeout', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $timeout, $mdSidenav, Auth, xhrInProgress) {
+app.controller('appController', ['$rootScope', '$http', '$location', '$timeout', '$route', '$window', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $timeout, $route, $window, $mdSidenav, Auth, xhrInProgress) {
   xhrInProgress.listenToXHR();
   $rootScope.showFab = false;
+  $rootScope.iPhone = $window.navigator.platform === 'iPhone' ? true : false;
   $rootScope.teams = ['Arsenal',
                       'Aston-Villa',
                       'Burnley',
@@ -102,6 +103,10 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$timeout',
     $timeout(function () {
       url === 'logout' ? Auth.logout() : $location.path(url);
     }, 250);
+  };
+
+  this.reload = function () {
+    $route.reload();
   };
 
   $rootScope.appController = this;
