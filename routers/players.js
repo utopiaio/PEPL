@@ -20,7 +20,7 @@ module.exports = function (dependency) {
        */
       case 'GET':
         if (request.params.id === undefined) {
-          pgClient.query('SELECT player_id, player_username, player_suspended, player_type FROM players;', [], function (error, result) {
+          pgClient.query('SELECT player_id, player_username, player_suspended FROM players;', [], function (error, result) {
             response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : []);
           });
