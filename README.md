@@ -1,4 +1,4 @@
 PEPL
 ====
 
-Prediction English Prediction League
+Prediction English Premier League

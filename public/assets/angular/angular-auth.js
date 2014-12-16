@@ -69,7 +69,7 @@ angular.module('moeAuth', [])
                 }
               }
 
-              deferred.reject(data);
+              deferred.reject(status);
             });
 
           return deferred.promise;

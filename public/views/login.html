@@ -13,22 +13,25 @@
       <form class="form-block"
             name="loginForm"
             ng-submit="loginController.login()"
+            autocomplete="off"
             novalidate>
         <h2 class="form-title">SIGN IN</h2>
 
         <md-text-float class="input-block"
+                       name="username"
                        type="text"
                        label="Username or Email"
                        ng-model="credentials.ID"
                        required></md-text-float>
         <md-text-float class="input-block"
+                       name="password"
                        type="password"
                        label="Password"
                        ng-model="credentials.password"
                        required></md-text-float>
         <br>
         <md-button type="submit"
-                   ng-disabled="xhrInProgress"
+                   ng-disabled="xhrInProgress || loginForm.$invalid"
                    class="md-primary md-raised btn-block btn-lg">sing in</md-button>
       </form>
     </div>
@@ -41,27 +44,31 @@
       <form class="form-block"
             name="signUpForm"
             ng-submit="loginController.singup()"
+            autocomplete="off"
             novalidate>
         <h2 class="form-title">SIGN UP</h2>
 
         <md-text-float class="input-block"
+                       name="username"
                        type="text"
                        label="Username"
                        ng-model="newPlayer.player_username"
                        required></md-text-float>
         <md-text-float class="input-block"
+                       name="email"
                        type="email"
                        label="Email"
                        ng-model="newPlayer.player_email"
                        required></md-text-float>
         <md-text-float class="input-block"
+                       name="password"
                        type="password"
                        label="Password"
                        ng-model="newPlayer.player_password"
                        required></md-text-float>
         <br>
         <md-button type="submit"
-                   ng-disabled="xhrInProgress"
+                   ng-disabled="xhrInProgress || signUpForm.$invalid"
                    class="md-primary md-raised btn-block btn-lg">sing up</md-button>
       </form>
     </div>
@@ -78,21 +85,21 @@
      layout-gt-lg="row"
      layout-align="space-around center">
   <div flex layout="column" layout-align="space-around center">
-    <i class="ion-ios7-locked-outline"></i>
+    <i class="ion-ios-locked-outline"></i>
     <h4 class="thumb-title">auto lock-down</h4>
     <small class="thumb-content">remember those days, when i WAS president...<br>now i don't have to look after you Mitches!</small>
   </div>
 
   <div flex layout="column" layout-align="space-around center">
-    <i class="ion-ios7-football-outline"></i>
+    <i class="ion-ios-football-outline"></i>
     <h4 class="thumb-title">triple the excitement</h4>
-    <small class="thumb-content">one man one desire...<br>get down...get down again</small>
+    <small class="thumb-content">one man, one desire...<br>get down...get down again</small>
   </div>
 
   <div flex layout="column" layout-align="space-around center">
-    <i class="ion-ios7-chatboxes-outline"></i>
+    <i class="ion-ios-chatboxes-outline"></i>
     <h4 class="thumb-title">introducing the wall</h4>
-    <small class="thumb-content">what's a league without trash-talk<br>PS wall is powered by socket.io</small>
+    <small class="thumb-content">what's a league without trash-talk<br>you're all Mitches!</small>
   </div>
 </div>
 

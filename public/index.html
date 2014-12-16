@@ -8,11 +8,11 @@
     <meta content="PEPL" name="apple-mobile-web-app-title">
 
     <!-- home screen -->
-    <link rel="apple-touch-icon" sizes="57x57" href="assets/images/ico/apple-touch-icon-114.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="assets/images/ico/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="assets/images/apple-touch/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="assets/images/apple-touch/apple-touch-icon-114.png">
     <!-- bookmark -->
-    <link rel="apple-touch-icon" sizes="72x72" href="assets/images/ico/apple-144.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="assets/images/ico/apple-144.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/images/apple-touch/apple-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/images/apple-touch/apple-144.png">
 
     <meta content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, minimal-ui" name="viewport">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,10 +28,8 @@
     <base href="/">
 
     <link rel="stylesheet" href="assets/angular/angular-material.min.css">
-    <link rel="stylesheet" href="assets/angular/themes/cyan-theme.css">
-    <link rel="stylesheet" href="assets/angular/themes/grey-theme.css">
     <link rel="stylesheet" href="assets/ionicons/css/ionicons.min.css">
-    <link rel="stylesheet" href="assets/css/animate.min.css">
+    <!-- <link rel="stylesheet" href="assets/css/animate.min.css"> -->
     <link rel="stylesheet" href="assets/css/style.css">
   </head>
 
@@ -56,7 +54,7 @@
                        ng-click="appController.navigateTo('/')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
-                  <i class="ion-ios7-alarm-outline md-item-icon"></i>
+                  <i class="ion-ios-alarm-outline md-item-icon"></i>
                 </md-inline-grid-icon>
               </div>
               <p class="md-grid-text">today</p>
@@ -70,7 +68,7 @@
                        ng-click="appController.navigateTo('/season')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
-                  <i class="ion-ios7-calendar-outline md-item-icon"></i>
+                  <i class="ion-ios-calendar-outline md-item-icon"></i>
                 </md-inline-grid-icon>
               </div>
               <p class="md-grid-text">season</p>
@@ -84,7 +82,7 @@
                        ng-click="appController.navigateTo('/standings')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
-                  <i class="ion-ios7-location-outline md-item-icon"></i>
+                  <i class="ion-ios-location-outline md-item-icon"></i>
                 </md-inline-grid-icon>
               </div>
               <p class="md-grid-text">standings</p>
@@ -98,10 +96,24 @@
                        ng-click="appController.navigateTo('/wall')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
-                  <i class="ion-ios7-chatboxes-outline md-item-icon"></i>
+                  <i class="ion-ios-chatboxes-outline md-item-icon"></i>
                 </md-inline-grid-icon>
               </div>
               <p class="md-grid-text">the wall</p>
+            </md-button>
+          </md-item>
+
+          <md-item>
+            <md-button class="md-grid-item-content"
+                       aria-label="wall"
+                       menu-target="reload"
+                       ng-click="appController.reload()">
+              <div class="md-icon-container">
+                <md-inline-grid-icon>
+                  <i class="ion-ios-reload md-item-icon"></i>
+                </md-inline-grid-icon>
+              </div>
+              <p class="md-grid-text">reload</p>
             </md-button>
           </md-item>
 
@@ -111,7 +123,7 @@
                        ng-click="appController.navigateTo('logout')">
               <div class="md-icon-container">
                 <md-inline-grid-icon>
-                  <i class="ion-ios7-close-outline md-item-icon"></i>
+                  <i class="ion-ios-close-outline md-item-icon"></i>
                 </md-inline-grid-icon>
               </div>
               <p class="md-grid-text">logout</p>
@@ -124,13 +136,13 @@
     </md-sidenav>
 
     <md-button ng-click="appController.toggleMenu()"
-               ng-show="showFab"
+               ng-if="showFab"
                aria-label="toggle menu"
-               class="md-fab md-primary md-fab-fixed-bottom-right ng-show-hide" >
+               class="md-fab md-primary md-fab-fixed-bottom-right animate-if" >
       <i class="ion-navicon" style="font-size: 32px;"></i>
     </md-button>
 
-    <div class="view" ng-view></div>
+    <div class="animate-view" ng-view></div>
 
     <script src="assets/jquery/jquery-2.1.1.min.js"></script>
     <script src="assets/moment/moment.min.js"></script>
@@ -146,12 +158,16 @@
     <script src="assets/angular/angular-progress.js"></script>
     <script src="assets/angular/angular-auth.js"></script>
     <script src="assets/angular/angular-toast.js"></script>
+    <script src="assets/angular/angular-dateTime.js"></script>
     <script src="assets/js/app.js"></script>
 
     <script src="assets/js/controllers/login.js"></script>
     <script src="assets/js/controllers/fixtures.js"></script>
     <script src="assets/js/controllers/fixture-new.js"></script>
     <script src="assets/js/controllers/players.js"></script>
+    <script src="assets/js/controllers/season.js"></script>
+    <script src="assets/js/controllers/standings.js"></script>
+    <script src="assets/js/controllers/wall.js"></script>
 
     <script src="assets/js/script.js"></script>
     <script src="/socket.io/socket.io.js"></script>

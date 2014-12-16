@@ -8,7 +8,6 @@
 
 var http = require('http');
 var path = require('path');
-var fs = require('fs');
 var express = require('express');
 var connect = require('connect');
 var bodyParser = require('body-parser');
@@ -20,17 +19,25 @@ var nodemailer = require('nodemailer');
 var socket = require('socket.io');
 var sessionStore = require('sessionstore').createSessionStore(); // Memory
 var socketHandshake = require('socket.io-handshake');
-var sha1 = require('./lib/cyper.js');
+var moment = require('moment');
+var sha1 = require('./lib/cyper');
+
+var login = require('./routers/login');
+var signup = require('./routers/signup');
+var players = require('./routers/players');
+var fixtures = require('./routers/fixtures');
+var predictions = require('./routers/predictions');
+var wall = require('./routers/wall');
 
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
 var sockets = {};
-var cookieSignature = 'Svi#isdf!93|4{5msVldx!fks(8}';
+var cookieSignature = 'Svi#isdf!93|4{5msVldx!fks(8|';
 var emailConfig = {
   service: 'Gmail',
   auth: {
-    user: 'gmail.user@gmail.com',
-    pass: 'userpass'
+    user: 'moe.duffdude@gmail.com',
+    pass: 'aardruybakmgbpmq'
   },
   from: 'Mamoe <moe.duffdude@gmail.com>',
   adminEmail: 'moe.duffdude@gmail.com'
@@ -41,11 +48,33 @@ var emailTransporter = nodemailer.createTransport({
   auth: emailConfig.auth
 });
 
-var client = new pg.Client(process.env.DATABASE_URL || 'tcp://postgres:password@127.0.0.1:5432/pepl');
-client.connect();
+var pgClient = new pg.Client(process.env.DATABASE_URL || 'tcp://postgres:password@127.0.0.1:5432/pepl');
+pgClient.connect();
 
 var app = express();
 app.set('port', process.env.PORT || 8000);
+
+
+
+// Guinness are you watching?
+var bootSQL = "CREATE TABLE IF NOT EXISTS players (player_id serial NOT NULL, player_username character varying(128) NOT NULL, player_password character varying(128) NOT NULL, player_suspended boolean NOT NULL DEFAULT false, player_email character varying(1024), player_type character varying(32) NOT NULL DEFAULT 'NORMAL'::character varying, CONSTRAINT player_pk PRIMARY KEY (player_id), CONSTRAINT player_email_unique UNIQUE (player_email), CONSTRAINT player_username_unique UNIQUE (player_username)); CREATE TABLE IF NOT EXISTS fixtures (fixture_id serial NOT NULL, fixture_team_home character varying(128) NOT NULL DEFAULT 'HOME TEAM'::character varying, fixture_team_away character varying(128) NOT NULL DEFAULT 'AWAY TEAM'::character varying, fixture_time timestamp with time zone NOT NULL DEFAULT now(), fixture_team_home_score integer DEFAULT (-1), fixture_team_away_score integer DEFAULT (-1), CONSTRAINT fixture_pk PRIMARY KEY (fixture_id)); CREATE TABLE IF NOT EXISTS predictions (prediction_id serial NOT NULL, prediction_fixture integer NOT NULL, prediction_player integer NOT NULL, prediction_home_team integer NOT NULL, prediction_away_team integer NOT NULL, prediction_timestamp timestamp with time zone NOT NULL DEFAULT now(), CONSTRAINT prediction_pk PRIMARY KEY (prediction_id), CONSTRAINT prediction_fixture_fk FOREIGN KEY (prediction_fixture) REFERENCES fixtures (fixture_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT prediction_player_fk FOREIGN KEY (prediction_player) REFERENCES players (player_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT prediction_unique UNIQUE (prediction_fixture, prediction_player)); CREATE TABLE IF NOT EXISTS wall (wall_id serial NOT NULL, wall_player integer, wall_message text NOT NULL, wall_timestamp timestamp with time zone NOT NULL DEFAULT now(), CONSTRAINT wall_pk PRIMARY KEY (wall_id), CONSTRAINT wall_player_fk FOREIGN KEY (wall_player) REFERENCES players (player_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE);";
+pgClient.query(bootSQL, [], function (error, result) {
+  if (error === null) {
+    // console.log(result);
+
+    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', '4706da2001c4b6b8dcecafa27c5c4155fc265ee7', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function (error, result) {
+      if (error === null) {
+        // console.log(result);
+      } else {
+        // console.log(error);
+      }
+    });
+  } else {
+    // console.log(error);
+  }
+});
+
+
 
 app.use(serveFavicon(path.join(__dirname, 'public/assets/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '/public')));
@@ -69,117 +98,15 @@ app.use(bodyParser.urlencoded({
 
 
 
-app.use('/api/login', function (request, response, next) {
-  switch(request.method) {
-    case 'GET':
-      response.status(request.session.loggedIn === true ? 200 : 412);
-      response.json({
-        player_id: request.session.player_id,
-        player_username: request.session.player_username,
-        player_email: request.session.player_email,
-        player_type: request.session.player_type,
-        player_suspended: request.session.player_suspended
-      });
-    break;
-
-    case 'POST':
-      client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE (player_username=$1 OR player_email=$1) AND player_password=$2 AND player_suspended=$3',
-                   [request.body.ID.toLowerCase(), sha1.sha1(String(request.body.password)), false],
-                   function (error, result) {
-        if (error) {
-          response.status(409);
-          response.json({});
-        } else {
-          if (result.rowCount === 1) {
-            request.session.loggedIn = true;
-            request.session.player_id = result.rows[0].player_id;
-            request.session.player_username = result.rows[0].player_username;
-            request.session.player_email = result.rows[0].player_email;
-            request.session.player_type = result.rows[0].player_type;
-            request.session.player_suspended = result.rows[0].player_suspended;
-            response.status(200);
-            response.json({
-              player_id: result.rows[0].player_id,
-              player_username: result.rows[0].player_username,
-              player_email: result.rows[0].player_email,
-              player_type: result.rows[0].player_type,
-              player_suspended: result.rows[0].player_suspended
-            });
-          } else {
-            response.status(401);
-            response.json({});
-          }
-        }
-      });
-    break;
-
-    case 'DELETE':
-      if (request.session.loggedIn === true) {
-        delete request.session.loggedIn;
-        response.status(202);
-        response.json({});
-      } else {
-        response.status(401);
-        response.json({});
-      }
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
+app.use('/api/login', login({pgClient: pgClient, sha1: sha1}));
+app.use('/api/signup', signup({pgClient: pgClient, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 
 
 
-app.use('/api/signup', function (request, response, next) {
-  switch(request.method) {
-    case 'POST':
-      // this measure is next to nothing
-      // but it'll keep out the Mitches out for at-least a second
-      // and not to mention Dyno --- 720
-      if (request.session.blockForAWeek === true) {
-        response.status(403);
-        response.json({});
-      } else {
-        client.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1.sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function (error, result) {
-          if (error) {
-            console.log(error);
-            response.status(409);
-            response.json({});
-          } else {
-            request.session.blockForAWeek = true;
-            response.status(202);
-            response.json({});
-
-            var mailOptions = {
-              from: emailConfig.from,
-              to: emailConfig.adminEmail,
-              subject: 'New User',
-              text: 'you have a new user Mitche, approve or decline that Mitch',
-              html: 'you have a new user Mitche, approve or decline that Mitch'
-            };
-
-            emailTransporter.sendMail(mailOptions, function (error, info) {
-              console.log(error === null ? info : error);
-            });
-          }
-        });
-      }
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
-
-
-
-// this middle fellow will check for authentication (i.e. session)
-// and will take the appropriate measures
+/**
+ * this middle fellow will check for authentication (i.e. session)
+ * and will take the appropriate measures
+ */
 app.use(/^\/api\/.*/, function (request, response, next) {
   if (request.session.loggedIn === true) {
     next();
@@ -191,163 +118,10 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 
 
 
-app.use(/^\/api\/players\/.*/, function (request, response, next) {
-  if (request.session.player_type === 'ADMINISTRATOR') {
-    next();
-  } else {
-    response.status(412);
-    response.json({});
-  }
-});
-
-
-
-app.use('/api/players/:id?/:status?', function (request, response, next) {
-  switch(request.method) {
-    case 'GET':
-      if (request.params.id === undefined) {
-        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players;', [], function (error, result) {
-          if (error) {
-            response.status(409);
-            response.json({});
-          } else {
-            response.status(200);
-            response.json(result.rows);
-          }
-        });
-      } else {
-        client.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE player_id=$1;', [request.params.id], function (error, result) {
-          if (error) {
-            response.status(409);
-            response.json({});
-          } else {
-            response.status(result.rowCount === 1 ? 200 : 404);
-            response.json(result.rowCount === 1 ? result.rows[0] : {});
-          }
-        });
-      }
-    break;
-
-    case 'PUT':
-      client.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.params.status === 'suspend' ? true : false, request.params.id], function (error, result) {
-        if (error) {
-          response.status(409);
-          response.json({});
-        } else {
-          response.status(result.rowCount === 1 ? 200 : 404);
-          response.json(result.rowCount === 1 ? result.rows[0] : {});
-
-          if (result.rowCount === 1) {
-            var mailOptions = {
-              from: emailConfig.from,
-              to: result.rows[0].player_email,
-              subject: request.params.status === 'suspend' ? 'Account SUSPEND' : 'Account Activated ✔',
-              text: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
-              html: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
-            };
-
-            emailTransporter.sendMail(mailOptions, function (error, info) {
-              console.log(error === null ? info : error);
-            });
-          }
-        }
-      });
-    break;
-
-    case 'DELETE':
-      client.query('DELETE FROM players where player_id=$1', [request.params.id], function (error, result) {
-        if (error) {
-          response.status(409);
-          response.json({});
-        } else {
-          response.status(202);
-          response.json({});
-        }
-      });
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
-
-
-
-app.use('/api/fixtures/:id?', function (request, response, next) {
-  switch(request.method) {
-    case 'GET':
-      if (request.params.id === undefined) {
-        client.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time FROM fixtures;', [], function (error, result) {
-          response.status(error === null ? 200 : 409);
-          response.json(error === null ? result.rows : 200);
-        });
-      } else {
-        if (request.session.player_type === 'ADMINISTRATOR') {
-          client.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time FROM fixtures WHERE fixture_id=$1;', [request.params.id], function (error, result) {
-            if (error) {
-              response.status(409);
-              response.json({});
-            } else {
-              response.status(result.rowCount === 1 ? 200 : 404);
-              response.json(result.rowCount === 1 ? result.rows[0] : {});
-            }
-          });
-        } else {
-          response.status(412);
-          response.json({});
-        }
-      }
-    break;
-
-    case 'POST':
-      if (request.session.player_type === 'ADMINISTRATOR') {
-        client.query('INSERT INTO fixtures (fixture_team_home, fixture_team_away, fixture_time) VALUES ($1, $2, $3) RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, request.body.fixture_time], function (error, result) {
-          response.status(error === null ? 202 : 409);
-          response.json(error === null ? result.rows[0] : {});
-        });
-      } else {
-        response.status(412);
-        response.json({});
-      }
-    break;
-
-    case 'PUT':
-      if (request.session.player_type === 'ADMINISTRATOR') {
-        client.query('UPDATE fixtures SET fixture_team_home=$1, fixture_team_away=$2, fixture_time=$3 WHERE fixture_id=$4 RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, request.body.fixture_time, request.params.id], function (error, result) {
-          if (error) {
-            response.status(409);
-            response.json({});
-          } else {
-            response.status(result.rowCount === 1 ? 200 : 404);
-            response.json(result.rowCount === 1 ? result.rows[0] : {});
-          }
-        });
-      } else {
-        response.status(412);
-        response.json({});
-      }
-    break;
-
-    case 'DELETE':
-      if (request.session.player_type === 'ADMINISTRATOR') {
-        client.query('DELETE FROM fixtures where fixture_id=$1', [request.params.id], function (error, result) {
-          response.status(error === null ? 202 : 409);
-          response.json({});
-        });
-      } else {
-        response.status(412);
-        response.json({});
-      }
-    break;
-
-    default:
-      response.status(405);
-      response.json({});
-    break;
-  }
-});
+app.use('/api/players/:id?', players({pgClient: pgClient, emailTransporter: emailTransporter, emailConfig: emailConfig}));
+app.use('/api/fixtures/:id?', fixtures({pgClient: pgClient}));
+app.use('/api/predictions/:anonymous?', predictions({pgClient: pgClient, moment: moment}));
+app.use('/api/wall', wall({pgClient: pgClient, sockets: sockets, moment: moment}));
 
 
 
@@ -374,11 +148,7 @@ io.use(socketHandshake({
 
 // yet another middle fellow that authenticates session
 io.use(function(socket, next) {
-  if (socket.handshake.session.loggedIn === true) {
-    next();
-  } else {
-    next(new Error('not authorized'));
-  }
+  socket.handshake.session.loggedIn === true ? next() : next(new Error('not authorized'));
 });
 
 // if a socket connection has established connection that means it's legit
@@ -387,12 +157,12 @@ io.on('connection', function (socket) {
   sockets[socket.handshake.session.player_username] = socket;
 
   // telling ERYone the good news
-  socket.broadcast.json.send({});
+  // socket.broadcast.json.send({});
 
   // this tells everyone the sad news
   socket.on('disconnect', function () {
     delete sockets[socket.handshake.session.player_username];
     // yet another a bit too much info
-    io.emit('message', {});
+    // io.emit('message', {});
   });
 });
