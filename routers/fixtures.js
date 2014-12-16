@@ -35,7 +35,7 @@ module.exports = function (dependency) {
        */
       case 'POST':
         if (request.session.player_type === 'ADMINISTRATOR') {
-          pgClient.query('INSERT INTO fixtures (fixture_team_home, fixture_team_away, fixture_time) VALUES ($1, $2, $3) RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, request.body.fixture_time], function (error, result) {
+          pgClient.query('INSERT INTO fixtures (fixture_team_home, fixture_team_away, fixture_time) VALUES ($1, $2, $3) RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, moment(request.body.fixture_time).toDate()], function (error, result) {
             response.status(error === null ? 202 : 409);
             response.json(error === null ? result.rows[0] : {});
           });
@@ -53,7 +53,7 @@ module.exports = function (dependency) {
        */
       case 'PUT':
         if (request.session.player_type === 'ADMINISTRATOR') {
-          pgClient.query('UPDATE fixtures SET fixture_team_home=$1, fixture_team_away=$2, fixture_time=$3, fixture_team_home_score=$4, fixture_team_away_score=$5 WHERE fixture_id=$6 RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score;', [request.body.fixture_team_home, request.body.fixture_team_away, request.body.fixture_time, request.body.fixture_team_home_score, request.body.fixture_team_away_score, request.params.id], function (error, result) {
+          pgClient.query('UPDATE fixtures SET fixture_team_home=$1, fixture_team_away=$2, fixture_time=$3, fixture_team_home_score=$4, fixture_team_away_score=$5 WHERE fixture_id=$6 RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score;', [request.body.fixture_team_home, request.body.fixture_team_away, moment(request.body.fixture_time).toDate(), request.body.fixture_team_home_score, request.body.fixture_team_away_score, request.params.id], function (error, result) {
             response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
           });
