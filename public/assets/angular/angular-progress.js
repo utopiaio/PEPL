@@ -29,7 +29,12 @@ angular.module('moeProgressMaterial', ['ngMaterial']).config(function ($routePro
           if (newVal === true) {
             loadingToast = $mdToast.show({
               controller: function () {},
-              template: '<md-toast style="position: fixed;"><span flex><i class="ion-loading-c"></i>&nbsp;&nbsp;Loading...</span></md-toast>',
+              template: '<md-toast style="position: fixed;">\
+                           <div flex layout="row" layout-align="start center">\
+                            <div flex="20"><md-progress-circular md-mode="indeterminate" md-diameter="24"></md-progress-circular></div>\
+                            <div flex>Loading...\</div>\
+                          </div>\
+                        </md-toast>',
               hideDelay: false,
               position: 'bottom left'
             });
