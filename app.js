@@ -133,7 +133,7 @@ app.use(function (request, response) {
 
 
 var server = http.createServer(app);
-server.listen(app.get('port'), '0.0.0.0');
+server.listen(app.get('port'));
 
 
 // socket.io will be piggy-back riding on Express
