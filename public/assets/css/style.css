@@ -200,6 +200,11 @@ img.pepl-logo {
   margin-top: 8px;
 }
 
+img.img-256 {
+  max-width: 256px;
+  height: auto;
+}
+
 div.aboot-pepl {
   font-size: 18px;
 }
@@ -237,6 +242,10 @@ i.icon-lg {
   font-size: 32px;
 }
 
+i.icon-huge {
+  font-size: 128px;
+}
+
 .text-center {
   text-align: center;
 }
@@ -263,6 +272,22 @@ p.player-status.suspended {
 
 p.player-status.active {
   background-color: #4daf7b;
+}
+
+.text-muted {
+  color: rgba(51, 51, 51, 0.5);
+}
+
+.badge {
+  color: #666;
+  background-color: rgba(51, 51, 51, 0.2);
+  padding: 0 12px;
+  border-radius: 4px;
+}
+
+.it-is-you {
+  background-color: rgba(51, 51, 51, 0.1);
+  border-radius: 2px;
 }
 
 small {

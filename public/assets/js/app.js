@@ -86,6 +86,10 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$timeout',
         case '/season':
           $('button[menu-target="season"]').addClass('active');
         break;
+
+        case '/standings':
+          $('button[menu-target="standings"]').addClass('active');
+        break;
       }
     }
   });
@@ -176,6 +180,17 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
     controller: 'seasonController',
     resolve: {
       loggedIn: AuthProvider.isLoggedIn
+    }
+  })
+
+  .when('/standings', {
+    templateUrl: 'views/standings.html',
+    controller: 'standingsController',
+    resolve: {
+      loggedIn: AuthProvider.isLoggedIn,
+      loadPlayers: standingsController.loadPlayers,
+      loadFixtures: standingsController.loadFixtures,
+      loadPredictions: standingsController.loadPredictions
     }
   })
 

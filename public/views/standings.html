@@ -1,0 +1,127 @@
+<div layout="row" style="padding: 0 4px;">
+  <div flex-lg="20" flex-gt-lg="20"></div>
+
+  <div flex>
+    <div layout="column">
+      <div layout="row">
+        <div flex="5"><b>#</b></div>
+        <div flex="35"><b>Player</b></div>
+        <div flex="10"><b>SO</b></div>
+        <div flex="10"><b>GD</b></div>
+        <div flex="10"><b>W</b></div>
+        <div flex="10"><b>L</b></div>
+        <div flex="10"><b>F</b></div>
+        <div flex="10"><b>PTS</b></div>
+      </div>
+
+      <md-divider></md-divider>
+
+      <div ng-repeat="(username, stat) in playersStat | orderBy:'stat.F':false | orderBy:'stat.L':false | orderBy:'stat.W':false | orderBy:'stat.GD':false | orderBy:'stat.SO':false | orderBy:'stat.PTS':false" layout="column">
+        <div layout="row">
+          <div flex="5" ng-bind="$index+1"></div>
+          <div flex="35" ng-bind="username"></div>
+          <div flex="10" ng-bind="stat.SO"></div>
+          <div flex="10" ng-bind="stat.GD"></div>
+          <div flex="10" ng-bind="stat.W"></div>
+          <div flex="10" ng-bind="stat.L"></div>
+          <div flex="10" ng-bind="stat.F"></div>
+          <div flex="10" ng-bind="stat.PTS"></div>
+        </div>
+
+        <md-divider></md-divider>
+      </div>
+    </div>
+  </div>
+
+  <div flex-lg="20" flex-gt-lg="20"></div>
+</div>
+
+<br>
+
+<div layout="row">
+  <div flex-lg="20" flex-gt-lg="20"></div>
+
+  <div flex layout="column" layout-fill>
+    <div ng-repeat="fixture in fixtures" style="padding-top: 16px;">
+      <div flex layout="row">
+        <div flex layout="column" layout-align="space-around center">
+          <img class="club-logo" ng-src="assets/images/teams/{{ fixture.fixture_team_home }}.png">
+          <p class="text-center club-name">{{ fixture.fixture_team_home }}</p>
+        </div>
+
+        <div flex="5" layout="row" layout-align="space-around center">
+          <h2 ng-bind="fixture.fixture_team_home_score"></h2>
+        </div>
+
+        <div flex="5" layout="row" layout-align="space-around center">
+          <h2>-</h2>
+        </div>
+
+        <div flex="5" layout="row" layout-align="space-around center">
+          <h2 ng-bind="fixture.fixture_team_away_score"></h2>
+        </div>
+
+        <div flex layout="column" layout-align="space-around center">
+          <img class="club-logo" ng-src="assets/images/teams/{{ fixture.fixture_team_away }}.png">
+          <p class="text-center club-name">{{ fixture.fixture_team_away }}</p>
+        </div>
+      </div>
+
+      <div layout="row" layout-align="center center">
+        <h6 class="text-muted" ng-bind="fixture.humanFormat"></h6>
+        <br>
+      </div>
+
+      <div layout="column">
+        <div layout="row"
+             ng-repeat="(player, prediction) in fixture.predictions"
+             ng-class="{'it-is-you': player === currentPlayer.player_username}"
+             style="margin-bottom: 4px;">
+          <div flex-lg="10" flex-gt-lg="10"></div>
+
+          <div ng-if="prediction.prediction_home_team === undefined"
+               flex layout="row"
+               layout-align="space-around center"><i class="ion-sad"></i></div>
+
+          <div ng-if="prediction.prediction_home_team !== undefined"
+               flex layout="row"
+               layout-align="space-around center"
+               ng-bind="prediction.prediction_home_team"></div>
+
+          <div flex="5" layout="row" layout-align="space-around center">-</div>
+
+          <div ng-if="prediction.prediction_away_team === undefined"
+               flex
+               layout="row"
+               layout-align="space-around center"><i class="ion-sad"></i></div>
+
+          <div ng-if="prediction.prediction_away_team !== undefined"
+               flex layout="row"
+               layout-align="space-around center"
+               ng-bind="prediction.prediction_away_team"></div>
+
+          <div flex layout="row" layout-align="space-around center" ng-bind="player"></div>
+          <div flex layout="row" layout-align="space-around center">
+            <div flex="25" flex-lg="35" flex-gt-lg="35"></div>
+            <div layout="row"
+                 layout-align="center"
+                 flex="50"
+                 flex-lg="30"
+                 flex-gt-lg="30"
+                 class="badge"
+                 ng-bind="prediction.PTS"></div>
+            <div flex="25" flex-lg="35" flex-gt-lg="35"></div>
+          </div>
+
+          <div flex-lg="10" flex-gt-lg="10"></div>
+        </div>
+      </div>
+
+      <md-divider></md-divider>
+    </div>
+  </div>
+
+  <div flex-lg="20" flex-gt-lg="20"></div>
+</div>
+
+<div class="fab-height"></div>

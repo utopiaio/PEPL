@@ -1,3 +1,10 @@
+<div ng-if="(fixtures | filter:showInToday:strict).length === 0"
+     layout="column"
+     layout-align="space-around center">
+  <img class="img-256" src="assets/images/carlostocat.gif">
+  <p>chill, no fixtures here</p>
+</div>
+
 <div layout="column">
   <!--
   <div>

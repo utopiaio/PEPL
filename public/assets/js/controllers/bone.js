@@ -1,3 +1,5 @@
-var homeController = app.controller('homeController', ['$scope', '$http', '$log', 'Auth', function ($scope, $http, $log, Auth) {
-  $scope.homeController = this;
+var bareController = app.controller('bareController', ['$scope', '$http', 'Auth', function ($scope, $http, Auth) {
+  scrollToTheTop();
+
+  $scope.bareController = this;
 }]);
