@@ -40,7 +40,8 @@ var app = angular.module('pepl', ['ngRoute',
 app.controller('appController', ['$rootScope', '$http', '$location', '$timeout', '$route', '$window', '$mdSidenav', 'Auth', 'xhrInProgress', function ($rootScope, $http, $location, $timeout, $route, $window, $mdSidenav, Auth, xhrInProgress) {
   xhrInProgress.listenToXHR();
   $rootScope.showFab = false;
-  $rootScope.iPhone = $window.navigator.platform.search(/iPhone/ig) === -1 ? false : true;
+  // we need reload where socket.io fails :(
+  // $rootScope.iPhone = $window.navigator.platform.search(/iPhone/ig) === -1 ? false : true;
   $rootScope.teams = ['Arsenal',
                       'Aston-Villa',
                       'Burnley',
