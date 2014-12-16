@@ -44,7 +44,7 @@ module.exports = function (dependency) {
       case 'PUT':
         if (request.session.player_type === 'ADMINISTRATOR') {
           // someone needs to look after you mitches!
-          pgClient.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_suspended, player_type;', [request.body.player_suspended, request.params.id], function (error, result) {
+          pgClient.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_email, player_suspended, player_type;', [request.body.player_suspended, request.params.id], function (error, result) {
             response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
 
@@ -56,7 +56,6 @@ module.exports = function (dependency) {
                 text: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
                 html: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
               };
-              console.log(mailOptions);
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
                 console.log(error === null ? info : error);
