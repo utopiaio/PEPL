@@ -20,7 +20,11 @@ module.exports = function (dependency) {
        */
       case 'GET':
         if (request.params.id === undefined) {
-          pgClient.query('SELECT player_id, player_username, player_suspended FROM players;', [], function (error, result) {
+          // i need a peak on the email to decide whether or not it's legit
+          // before i approve it
+          var SQL = request.session.player_type === 'ADMINISTRATOR' ? 'SELECT player_id, player_username, player_email, player_suspended FROM players;' : 'SELECT player_id, player_username, player_suspended FROM players;';
+
+          pgClient.query(SQL, [], function (error, result) {
             response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : []);
           });
