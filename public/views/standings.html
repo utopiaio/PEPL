@@ -4,8 +4,8 @@
   <div flex>
     <div layout="column">
       <div layout="row">
-        <div flex="5"><b>#</b></div>
-        <div flex="35"><b>Player</b></div>
+        <div flex="10"><b>#</b></div>
+        <div flex="30"><b>Player</b></div>
         <div flex="10"><b>SO</b></div>
         <div flex="10"><b>GD</b></div>
         <div flex="10"><b>W</b></div>
@@ -18,8 +18,8 @@
 
       <div ng-repeat="(username, stat) in playersStat | orderBy:'stat.F':false | orderBy:'stat.L':false | orderBy:'stat.W':false | orderBy:'stat.GD':false | orderBy:'stat.SO':false | orderBy:'stat.PTS':false" layout="column">
         <div layout="row" ng-class="{'it-is-you': username === currentPlayer.player_username}">
-          <div flex="5" ng-bind="$index+1"></div>
-          <div flex="35" ng-bind="username"></div>
+          <div flex="10" ng-bind="$index+1"></div>
+          <div flex="30" ng-bind="username"></div>
           <div flex="10" ng-bind="stat.SO"></div>
           <div flex="10" ng-bind="stat.GD"></div>
           <div flex="10" ng-bind="stat.W"></div>
