@@ -32,7 +32,7 @@ var wall = require('./routers/wall');
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
 var sockets = {};
-var cookieSignature = 'Svi#isdf!93|4{5msVldx!fks(8}';
+var cookieSignature = 'Svi#isdf!93|4{5msVldx!fks(8|';
 var emailConfig = {
   service: 'Gmail',
   auth: {
