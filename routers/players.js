@@ -52,9 +52,9 @@ module.exports = function (dependency) {
               var mailOptions = {
                 from: emailConfig.from,
                 to: result.rows[0].player_email,
-                subject: request.params.status === 'suspend' ? 'Account SUSPEND' : 'Account Activated ✔',
-                text: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
-                html: request.params.status === 'suspend' ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
+                subject: request.body.player_suspended === true ? 'Account SUSPENDED' : 'Account Activated ✔',
+                text: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
+                html: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
               };
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
