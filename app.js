@@ -54,6 +54,28 @@ pgClient.connect();
 var app = express();
 app.set('port', process.env.PORT || 8000);
 
+
+
+// Guinness are you watching?
+var bootSQL = "CREATE TABLE IF NOT EXISTS players (player_id serial NOT NULL, player_username character varying(128) NOT NULL, player_password character varying(128) NOT NULL, player_suspended boolean NOT NULL DEFAULT false, player_email character varying(1024), player_type character varying(32) NOT NULL DEFAULT 'NORMAL'::character varying, CONSTRAINT player_pk PRIMARY KEY (player_id), CONSTRAINT player_email_unique UNIQUE (player_email), CONSTRAINT player_username_unique UNIQUE (player_username)); CREATE TABLE IF NOT EXISTS fixtures (fixture_id serial NOT NULL, fixture_team_home character varying(128) NOT NULL DEFAULT 'HOME TEAM'::character varying, fixture_team_away character varying(128) NOT NULL DEFAULT 'AWAY TEAM'::character varying, fixture_time timestamp with time zone NOT NULL DEFAULT now(), fixture_team_home_score integer DEFAULT (-1), fixture_team_away_score integer DEFAULT (-1), CONSTRAINT fixture_pk PRIMARY KEY (fixture_id)); CREATE TABLE IF NOT EXISTS predictions (prediction_id serial NOT NULL, prediction_fixture integer NOT NULL, prediction_player integer NOT NULL, prediction_home_team integer NOT NULL, prediction_away_team integer NOT NULL, prediction_timestamp timestamp with time zone NOT NULL DEFAULT now(), CONSTRAINT prediction_pk PRIMARY KEY (prediction_id), CONSTRAINT prediction_fixture_fk FOREIGN KEY (prediction_fixture) REFERENCES fixtures (fixture_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT prediction_player_fk FOREIGN KEY (prediction_player) REFERENCES players (player_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT prediction_unique UNIQUE (prediction_fixture, prediction_player)); CREATE TABLE IF NOT EXISTS wall (wall_id serial NOT NULL, wall_player integer, wall_message text NOT NULL, wall_timestamp timestamp with time zone NOT NULL DEFAULT now(), CONSTRAINT wall_pk PRIMARY KEY (wall_id), CONSTRAINT wall_player_fk FOREIGN KEY (wall_player) REFERENCES players (player_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE);";
+pgClient.query(bootSQL, [], function (error, result) {
+  if (error === null) {
+    // console.log(result);
+
+    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', '4706da2001c4b6b8dcecafa27c5c4155fc265ee7', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function (error, result) {
+      if (error === null) {
+        // console.log(result);
+      } else {
+        // console.log(error);
+      }
+    });
+  } else {
+    // console.log(error);
+  }
+});
+
+
+
 app.use(serveFavicon(path.join(__dirname, 'public/assets/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(expressSession({
