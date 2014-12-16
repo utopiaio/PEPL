@@ -56,6 +56,7 @@ module.exports = function (dependency) {
                 text: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
                 html: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
               };
+              console.log(mailOptions);
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
                 console.log(error === null ? info : error);
