@@ -91,6 +91,10 @@ app.controller('appController', ['$rootScope', '$http', '$location', '$timeout',
         case '/standings':
           $('button[menu-target="standings"]').addClass('active');
         break;
+
+        case '/wall':
+          $('button[menu-target="wall"]').addClass('active');
+        break;
       }
     }
   });
@@ -192,6 +196,15 @@ app.config(function ($routeProvider, $locationProvider, AuthProvider) {
       loadPlayers: standingsController.loadPlayers,
       loadFixtures: standingsController.loadFixtures,
       loadPredictions: standingsController.loadPredictions
+    }
+  })
+
+  .when('/wall', {
+    templateUrl: 'views/wall.html',
+    controller: 'wallController',
+    resolve: {
+      loggedIn: AuthProvider.isLoggedIn,
+      loadMessages: wallController.loadMessages
     }
   })
 

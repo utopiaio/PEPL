@@ -124,6 +124,10 @@ select.input-block {
   width: 100%;
 }
 
+md-input-group.input-block {
+  width: 100%;
+}
+
 select.input-block,
 input.input-block[type="date"],
 input.input-block[type="time"] {
@@ -138,6 +142,10 @@ md-input-group.input-search input {
 
 md-input-group.input-search label {
   padding: 0 16px;
+}
+
+.player-color {
+  color: rgba(142, 68, 173, 1.0);
 }
 
 .md-item-icon {

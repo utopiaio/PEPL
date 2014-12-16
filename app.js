@@ -99,7 +99,7 @@ app.use(/^\/api\/.*/, function (request, response, next) {
 app.use('/api/players/:id?', players({pgClient: pgClient, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 app.use('/api/fixtures/:id?', fixtures({pgClient: pgClient}));
 app.use('/api/predictions/:anonymous?', predictions({pgClient: pgClient, moment: moment}));
-app.use('/api/wall', wall({pgClient: pgClient, sockets: sockets}));
+app.use('/api/wall', wall({pgClient: pgClient, sockets: sockets, moment: moment}));
 
 
 

@@ -1,0 +1,45 @@
+<div layout="column" style="padding: 0 12px;">
+  <div layout="row">
+    <div flex-lg="25" flex-gt-lg="25"></div>
+
+    <div flex flex-lg="50" flex-gt-lg="50" layout="row">
+      <div flex layout="row" layout-align="center center" layout-fill>
+        <md-text-float class="input-block" label="Trash (PG-13)" ng-model="message.message"></md-text-float>
+      </div>
+      <div flex="5"></div>
+      <div flex="20" layout="row" layout-align="center center">
+        <md-button ng-disabled="message.message.length < 3"
+                   ng-click="wallController.post()"
+                   class="md-raised md-primary btn-block">POST</md-button>
+      </div>
+    </div>
+
+    <div flex-lg="25" flex-gt-lg="25"></div>
+  </div>
+
+  <div layout="row">
+    <div flex-lg="25" flex-gt-lg="25"></div>
+
+    <div flex>
+      <md-content>
+        <md-item ng-repeat="msg in messages">
+          <!--
+          <div class="md-tile-left"></div>
+          -->
+
+          <div class="md-tile-content" ng-class="{'it-is-you': msg.wall_player.player_username === currentPlayer.player_username}">
+            <h3 ng-bind="msg.wall_message"></h3>
+            <h4 ng-bind="msg.wall_player.player_username" class="player-color"></h4>
+            <p ng-bind="msg.age"></p>
+          </div>
+
+          <md-divider></md-divider>
+        </md-item>
+      </md-content>
+    </div>
+
+    <div flex-lg="25" flex-gt-lg="25"></div>
+  </div>
+</div>
+
+<div class="fab-height"></div>
