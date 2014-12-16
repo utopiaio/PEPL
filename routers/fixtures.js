@@ -1,5 +1,6 @@
 module.exports = function (dependency) {
-  var pgClient = dependency.pgClient;
+  var pgClient = dependency.pgClient,
+      moment = dependency.moment;
 
   return function (request, response, next) {
     switch(request.method) {
