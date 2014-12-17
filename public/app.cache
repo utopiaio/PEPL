@@ -49,6 +49,20 @@ assets/ionicons/fonts/ionicons.ttf
 assets/ionicons/fonts/ionicons.woff
 assets/jquery/jquery-2.1.1.min.js
 assets/moment/moment.min.js
+assets/js/app.js
+assets/js/script.js
+assets/js/controllers/fixtures.js
+assets/js/controllers/login.js
+assets/js/controllers/players.js
+assets/js/controllers/season.js
+assets/js/controllers/standings.js
+assets/js/controllers/wall.js
+views/fixtures.html
+views/login.html
+views/players.html
+views/season.html
+views/standings.html
+views/wall.html
 
 NETWORK:
 *
