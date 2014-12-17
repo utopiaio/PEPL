@@ -32,8 +32,8 @@ module.exports = function (dependency) {
                 from: emailConfig.from,
                 to: emailConfig.adminEmail,
                 subject: 'New User',
-                text: 'approve or decline a Mitch ['+ request.body.player_username +' <'+ request.body.player_email +'>]',
-                html: 'approve or decline a Mitch ['+ request.body.player_username +' <'+ request.body.player_email +'>]'
+                text: String('approve or decline a Mitch ['+ request.body.player_username +' <'+ request.body.player_email +'>]'),
+                html: String('approve or decline a Mitch ['+ request.body.player_username +' <'+ request.body.player_email +'>]')
               };
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
