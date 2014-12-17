@@ -22,7 +22,7 @@ module.exports = function (dependency) {
         if (request.session.blockForAWeek === true) {
           response.status(403);
           response.json({});
-        } else if (request.body.player_username.length < 3 || request.body.player_password < 3 || request.body.player_email.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1) {
+        } else if (request.body.player_username.length < 3 || request.body.player_username.length > 10 ||  request.body.player_password < 3 || request.body.player_email.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1) {
           response.status(406);
           response.json({});
         } else {

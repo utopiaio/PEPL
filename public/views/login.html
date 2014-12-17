@@ -53,6 +53,7 @@
                        type="text"
                        label="Username"
                        ng-model="newPlayer.player_username"
+                       ng-maxlength="10"
                        required></md-text-float>
         <md-text-float class="input-block"
                        name="email"
@@ -65,6 +66,7 @@
                        type="password"
                        label="Password"
                        ng-model="newPlayer.player_password"
+                       ng-minlength="3"
                        required></md-text-float>
         <br>
         <md-button type="submit"
