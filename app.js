@@ -32,15 +32,15 @@ var wall = require('./routers/wall');
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
 var sockets = {};
-var cookieSignature = 'Mvi#isdf!93O4{5msVldx!fks(8E';
+var cookieSignature = 'COOKIE-SIGNATURE';
 var emailConfig = {
   service: 'PLATFORM',
   auth: {
-    user: 'moe.duffdude@gmail.com',
-    pass: 'jtjwflasdzicycpl'
+    user: 'EMAIL',
+    pass: 'PASSWORD'
   },
-  from: 'Mamoe <moe.duffdude@gmail.com>',
-  adminEmail: 'moe.duffdude@gmail.com'
+  from: 'ADMIN-EMAIL',
+  adminEmail: 'ADMIN-EMAIL'
 };
 
 var emailTransporter = nodemailer.createTransport({
