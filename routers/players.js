@@ -56,7 +56,7 @@ module.exports = function (dependency) {
               var mailOptions = {
                 from: emailConfig.from,
                 to: result.rows[0].player_email,
-                subject: String('Account '+ request.body.player_suspended === true ? 'SUSPENDED' : 'Activated ✔'),
+                subject: 'Account '+ (request.body.player_suspended === true ? 'SUSPENDED' : 'Activated ✔'),
                 text: 'username: '+ result.rows[0].player_username +'\nemail: '+ result.rows[0].player_email +'\n\nPresident of PIFA, MaMoe',
                 html: '@<b>'+ result.rows[0].player_username +'</b><br><i>'+ result.rows[0].player_email +'</i><br><p>President of PIFA, MaMoe</p>'
               };
