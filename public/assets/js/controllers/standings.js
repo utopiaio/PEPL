@@ -89,7 +89,7 @@ standingsController.loadPlayers = function ($q, $http) {
       deferred.resolve(data);
     })
     .error(function (data, staus) {
-      resolve.reject();
+      deferred.reject();
     });
 
   return deferred.promise;
