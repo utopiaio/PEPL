@@ -22,7 +22,7 @@ module.exports = function (dependency) {
         if (request.session.blockForAWeek === true) {
           response.status(403);
           response.json({});
-        } else if (request.body.player_username.length < 3 || request.body.player_password < 3 || request.body.player_email.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1) {
+        } else if (request.body.player_username.length < 3 || request.body.player_username.length > 10 ||  request.body.player_password < 3 || request.body.player_email.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1) {
           response.status(406);
           response.json({});
         } else {
@@ -32,8 +32,8 @@ module.exports = function (dependency) {
                 from: emailConfig.from,
                 to: emailConfig.adminEmail,
                 subject: 'New User',
-                text: 'approve or decline a Mitch',
-                html: 'approve or decline a Mitch'
+                text: 'username: '+ request.body.player_username +'\nemail: '+ request.body.player_email,
+                html: '@<b>'+ request.body.player_username +'</b><br><i>'+ request.body.player_email +'</i>'
               };
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
