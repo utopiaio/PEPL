@@ -3,7 +3,7 @@
  *
  * December, 2014 --- send-off
  *
- * P-EPL
+ * PEPL
  */
 
 var http = require('http');
