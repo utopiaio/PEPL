@@ -32,15 +32,15 @@ var wall = require('./routers/wall');
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
 var sockets = {};
-var cookieSignature = 'Svi#isdf!93|4{5msVldx!fks(8|';
+var cookieSignature = 'COOKIE-SIGNATURE';
 var emailConfig = {
-  service: 'Gmail',
+  service: 'PLATFORM',
   auth: {
-    user: 'moe.duffdude@gmail.com',
-    pass: 'aardruybakmgbpmq'
+    user: '<ID>',
+    pass: '<APP-PASSWORD>' // yes, I've revoked the previous password
   },
-  from: 'Mamoe <moe.duffdude@gmail.com>',
-  adminEmail: 'moe.duffdude@gmail.com'
+  from: 'ADMIN <ADMIN-EMAIL>',
+  adminEmail: 'ADMIN-EMAIL'
 };
 
 var emailTransporter = nodemailer.createTransport({
@@ -76,6 +76,13 @@ pgClient.query(bootSQL, [], function (error, result) {
 
 
 
+/**
+ * i don't know if this "works" or not
+ */
+app.use('/app\.cache$', function (request, response, next) {
+  response.setHeader('Content-Type', 'text/cache-manifest');
+  next();
+});
 app.use(serveFavicon(path.join(__dirname, 'public/assets/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(expressSession({
