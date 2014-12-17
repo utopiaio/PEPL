@@ -57,8 +57,8 @@ module.exports = function (dependency) {
                 from: emailConfig.from,
                 to: result.rows[0].player_email,
                 subject: request.body.player_suspended === true ? 'Account SUSPENDED' : 'Account Activated ✔',
-                text: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔',
-                html: request.body.player_suspended === true ? 'your account has been suspended' : 'your account @PEPL has been activated ✔'
+                text: 'PEPL account '+ request.body.player_suspended === true ? 'suspended' : 'activated' +'\nusername: '+ result.rows[0].player_username +'\nemail: '+ result.rows[0].player_email,
+                html: 'PEPL account '+ request.body.player_suspended === true ? 'suspended' : 'activated' +'<br>@'+ result.rows[0].player_username +'<b></b><br><i>'+ result.rows[0].player_email +'</i><br><br><p>President of PIFA, MaMoe<p>'
               };
 
               emailTransporter.sendMail(mailOptions, function (error, info) {
