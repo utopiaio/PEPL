@@ -76,6 +76,13 @@ pgClient.query(bootSQL, [], function (error, result) {
 
 
 
+app.use(function (request, response, next) {
+  if (request.headers['X-Forwarded-Proto'] === 'https') {
+    next();
+  } else {
+    response.redirect('https://pepl.herokuapp.com');
+  }
+});
 /**
  * i don't know if this "works" or not
  */
@@ -91,7 +98,7 @@ app.use(expressSession({
   secret: cookieSignature,
   cookie: {
     maxAge: 604800000, // 7 days
-    secure: false, // BUY me an SSL and we can set this to true
+    secure: true, // BUY me an SSL and we can set this to true
     httpOnly: true
   },
   rolling: true,
