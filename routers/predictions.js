@@ -61,10 +61,8 @@ module.exports = function (dependency) {
                           }
                         }
 
-                        // instead of playing with the time, there's a simpler approach
-                        // fixtures having >-1 are included
-                        // CURRENT player predictions are returned --- even though he/she can't
-                        // do anything about it --- LOCKED!
+                        // instead of playing with the time, we're going to use a simpler approach
+                        // ONLY fixtures having >-1 are included
                         if (predictions[iPredictions].prediction_fixture.fixture_team_home_score > -1) {
                           coolPredictions.push(predictions[iPredictions]);
                         }
