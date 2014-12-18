@@ -1,12 +1,11 @@
 CACHE MANIFEST
-# Rev 0.0.3
+# Rev 0.0.4
 
 CACHE:
 index.html
 assets/angular/angular-animate.min.js
 assets/angular/angular-aria.min.js
 assets/angular/angular-auth.js
-assets/angular/angular-dateTime.js
 assets/angular/angular-material.min.css
 assets/angular/angular-material.min.js
 assets/angular/angular-progress.js

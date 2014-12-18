@@ -4,10 +4,10 @@ angular.module('moeDateTime', []).directive('dateTime', function () {
     link: function (scope, element, attribute) {
       $(element).datetimepicker({
         icons: {
-            time: 'ion-ios7-time-outline',
-            date: 'ion-ios7-calendar-outline',
-            up:   'ion-ios7-arrow-up',
-            down: 'ion-ios7-arrow-down'
+            time: 'ion-ios-time-outline',
+            date: 'ion-ios-calendar-outline',
+            up:   'ion-ios-arrow-up',
+            down: 'ion-ios-arrow-down'
         }
       });
     }
