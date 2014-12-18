@@ -77,11 +77,15 @@ pgClient.query(bootSQL, [], function (error, result) {
 
 
 app.use(function (request, response, next) {
+  /*
   if (request.headers['X-Forwarded-Proto'] === 'https') {
     next();
   } else {
     response.redirect('https://pepl.herokuapp.com');
   }
+  */
+  next();
+  console.log(request.headers);
 });
 /**
  * i don't know if this "works" or not
