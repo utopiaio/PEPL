@@ -61,9 +61,22 @@ module.exports = function (dependency) {
                           }
                         }
 
-                        if (moment(predictions[iPredictions].prediction_timestamp).add(30, 'minutes').isAfter(moment(predictions[iPredictions].prediction_fixture.fixture_time)) || predictions[iPredictions].prediction_player === request.session.player_id) {
+                        // instead of playing with the time, there's a simpler approach
+                        // fixtures having >-1 are included
+                        // CURRENT player predictions are returned --- even though he/she can't
+                        // do anything about it --- LOCKED!
+                        if (predictions[iPredictions].prediction_fixture.fixture_team_home_score > -1) {
                           coolPredictions.push(predictions[iPredictions]);
                         }
+
+                        /**
+                         * previous algorithm
+                         * PS
+                         * here, there's Timezone issues which i haven't figured out
+                        if (moment(predictions[iPredictions].prediction_timestamp).add(30, 'minutes').isAfter(moment(predictions[iPredictions].prediction_fixture.fixture_time)) || predictions[iPredictions].prediction_player.player_id === request.session.player_id) {
+                          coolPredictions.push(predictions[iPredictions]);
+                        }
+                        */
                       }
 
                       response.status(200);
