@@ -13,7 +13,6 @@ module.exports = function (dependency) {
     switch(request.method) {
       /**
        * returns all predictions that are time-locked
-       * also returns predictions of the CURRENT player --- ONLY for viewing
        * PUT request is not acceptable here :)
        *
        * 200 --- accepted
