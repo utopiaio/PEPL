@@ -77,7 +77,11 @@
 
 /* material customization: START ---------------------------------------------*/
 md-sidenav {
-  width: 236px;
+  width: 222px;
+}
+
+md-content.md-padding {
+  padding: 8px;
 }
 
 md-sidenav,
