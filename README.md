@@ -1,5 +1,7 @@
 #PEPL (Prediction EPL)
 
+![PEPL](public/assets/images/mock-up.png)
+
 ###Point
 - 3PTS spot-on
 - 2PTS goal-difference
