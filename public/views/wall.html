@@ -8,7 +8,7 @@
       </div>
       <div flex="5"></div>
       <div flex="20" layout="row" layout-align="center center">
-        <md-button ng-disabled="message.message.length < 3"
+        <md-button ng-disabled="message.message.length < 3 || xhrInProgress"
                    ng-click="wallController.post()"
                    class="md-raised md-primary btn-block">POST</md-button>
       </div>
