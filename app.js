@@ -77,13 +77,13 @@ pgClient.query(bootSQL, [], function (error, result) {
 
 
 // HTTPS
-// app.use(function (request, response, next) {
-//   request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
-// });
+app.use(function (request, response, next) {
+  request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
+});
 app.use('/app\.cache$', function (request, response, next) {
-  response.status(404).end();
-  // response.setHeader('Content-Type', 'text/cache-manifest');
-  // next();
+  // response.status(404).end();
+  response.setHeader('Content-Type', 'text/cache-manifest');
+  next();
 });
 app.use(serveFavicon(path.join(__dirname, 'public/assets/images/favicon.ico')));
 app.use(express.static(path.join(__dirname, '/public')));
@@ -93,7 +93,7 @@ app.use(expressSession({
   secret: cookieSignature,
   cookie: {
     maxAge: 604800000, // 7 days
-    secure: false,
+    secure: true,
     httpOnly: true
   },
   rolling: true,
