@@ -93,7 +93,7 @@ app.use(expressSession({
   secret: cookieSignature,
   cookie: {
     maxAge: 604800000, // 7 days
-    secure: true,
+    secure: false,
     httpOnly: true
   },
   rolling: true,
