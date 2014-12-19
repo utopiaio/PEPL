@@ -19,7 +19,7 @@ var standingsController = app.controller('standingsController', ['$scope', '$htt
   // initiating players' stat
   $scope.playersStat = {}; // {'username': {SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0}}
   angular.forEach($scope.players, function (value, key) {
-    $scope.playersStat[value.player_username] = {SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0};
+    $scope.playersStat[value.player_username] = {$username: value.player_username, SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0};
   });
 
   // we'll loop through fixtures and associate em' with predictions
@@ -76,6 +76,23 @@ var standingsController = app.controller('standingsController', ['$scope', '$htt
   });
 
   $scope.fixtures = $filter('orderBy')($scope.fixtures, 'unixEpoch', true);
+
+  /**
+   * there's no turning back now
+   * i was wrong, so wrong! (Prometheus)
+   */
+  $scope.statOrdered = [];
+  angular.forEach($scope.playersStat, function (value, key) {
+    $scope.statOrdered.push(value);
+  });
+
+  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'F', false);
+  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'L', false);
+  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'W', true);
+  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'GD', true);
+  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'SO', true);
+  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'PTS', true);
+
   $scope.standingsController = this;
 }]);
 

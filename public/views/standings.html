@@ -16,10 +16,10 @@
 
       <md-divider></md-divider>
 
-      <div ng-repeat="(username, stat) in playersStat | orderBy:'stat.F':false | orderBy:'stat.L':false | orderBy:'stat.W':false | orderBy:'stat.GD':false | orderBy:'stat.SO':false | orderBy:'stat.PTS':false" layout="column">
-        <div layout="row" ng-class="{'it-is-you': username === currentPlayer.player_username}">
+      <div ng-repeat="stat in statOrdered" layout="column">
+        <div layout="row" ng-class="{'it-is-you': stat.$username === currentPlayer.player_username}">
           <div flex="10" ng-bind="$index+1"></div>
-          <div flex="30" ng-bind="username"></div>
+          <div flex="30" ng-bind="stat.$username"></div>
           <div flex="10" ng-bind="stat.SO"></div>
           <div flex="10" ng-bind="stat.GD"></div>
           <div flex="10" ng-bind="stat.W"></div>
