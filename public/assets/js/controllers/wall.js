@@ -1,9 +1,16 @@
-var wallController = app.controller('wallController', ['$scope', '$http', '$filter', 'Auth', 'Toast', 'loadMessages', function ($scope, $http, $filter, Auth, Toast, loadMessages) {
+var wallController = app.controller('wallController', ['$scope', '$http', '$filter', '$interval', 'Auth', 'Toast', 'loadMessages', function ($scope, $http, $filter, $interval, Auth, Toast, loadMessages) {
   scrollToTheTop();
 
   $scope.currentPlayer = Auth.info();
   $scope.message = {message: ''};
   $scope.messages = loadMessages;
+
+  // refresh trash age every minute
+  $interval(function () {
+    angular.forEach($scope.messages, function (value, key) {
+      $scope.messages[key].age = moment(value.wall_timestamp).fromNow();
+    });
+  }, 60000);
 
   /**
    * i should have handled the socket connection initiation
