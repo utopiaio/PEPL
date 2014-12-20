@@ -40,37 +40,47 @@ var standingsController = app.controller('standingsController', ['$scope', '$htt
       if (valueF.predictions.hasOwnProperty(username) === true) {
         // spot-on
         if ((valueF.fixture_team_home_score === valueF.predictions[username].prediction_home_team) && (valueF.fixture_team_away_score === valueF.predictions[username].prediction_away_team)) {
-          $scope.playersStat[username].SO ++;
-          $scope.playersStat[username].PTS += 3;
-          $scope.fixtures[keyF].predictions[username].PTS = 3;
+          if (valueF.fixture_team_home_score > -1) {
+            $scope.playersStat[username].SO ++;
+            $scope.playersStat[username].PTS += 3;
+            $scope.fixtures[keyF].predictions[username].PTS = 3;
+          }
         }
 
         // goal difference
         else if ((valueF.fixture_team_home_score - valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team - valueF.predictions[username].prediction_away_team)) {
-          $scope.playersStat[username].GD ++;
-          $scope.playersStat[username].PTS += 2;
-          $scope.fixtures[keyF].predictions[username].PTS = 2;
+          if (valueF.fixture_team_home_score > -1) {
+            $scope.playersStat[username].GD ++;
+            $scope.playersStat[username].PTS += 2;
+            $scope.fixtures[keyF].predictions[username].PTS = 2;
+          }
         }
 
         // side
         else if ((valueF.fixture_team_home_score > valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team > valueF.predictions[username].prediction_away_team)) {
-          $scope.playersStat[username].W ++;
-          $scope.playersStat[username].PTS += 1;
-          $scope.fixtures[keyF].predictions[username].PTS = 1;
+          if (valueF.fixture_team_home_score > -1) {
+            $scope.playersStat[username].W ++;
+            $scope.playersStat[username].PTS += 1;
+            $scope.fixtures[keyF].predictions[username].PTS = 1;
+          }
         }
 
         // miiiiiiiiiiiiiiith
         else {
-          $scope.playersStat[username].L ++;
-          $scope.fixtures[keyF].predictions[username].PTS = 0;
+          if (valueF.fixture_team_home_score > -1) {
+            $scope.playersStat[username].L ++;
+            $scope.fixtures[keyF].predictions[username].PTS = 0;
+          }
         }
       }
 
       // forfeit
       else {
-        $scope.playersStat[username].F ++;
-        $scope.playersStat[username].PTS -= 1;
-        $scope.fixtures[keyF].predictions[username] = {PTS: -1};
+        if (valueF.fixture_team_home_score > -1) {
+          $scope.playersStat[username].F ++;
+          $scope.playersStat[username].PTS -= 1;
+          $scope.fixtures[keyF].predictions[username] = {PTS: -1};
+        }
       }
     });
   });
