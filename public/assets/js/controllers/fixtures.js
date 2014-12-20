@@ -48,7 +48,11 @@
 
             data[key].unixEpoch = moment(data[key].fixture_time).valueOf();
             data[key].age = moment(data[key].fixture_time).fromNow();
-            data[key].showInToday = moment(data[key].fixture_time).isSame(moment(), 'day');
+            // this accounts for different timezones which isSame "doesn't"
+            // games starting at midnight will no longer be on lock-down
+            var dMinus24 = moment(data[key].fixture_time).subtract(1, 'day'),
+                dPlus24 = moment(data[key].fixture_time).add(1, 'day');
+            data[key].showInToday = moment().isAfter(dMinus24) && moment().isBefore(dPlus24);
             /**
              * 45 minutes - first half
              * 1 minute - minimum stoppage time
