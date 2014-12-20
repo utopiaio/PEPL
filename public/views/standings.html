@@ -50,7 +50,7 @@
         </div>
 
         <div flex="5" layout="row" layout-align="space-around center">
-          <h2 ng-bind="fixture.fixture_team_home_score"></h2>
+          <h2 ng-if="fixture.fixture_team_home_score > -1" ng-bind="fixture.fixture_team_home_score"></h2>
         </div>
 
         <div flex="5" layout="row" layout-align="space-around center">
@@ -58,7 +58,7 @@
         </div>
 
         <div flex="5" layout="row" layout-align="space-around center">
-          <h2 ng-bind="fixture.fixture_team_away_score"></h2>
+          <h2 ng-if="fixture.fixture_team_away_score > -1" ng-bind="fixture.fixture_team_away_score"></h2>
         </div>
 
         <div flex layout="column" layout-align="space-around center">

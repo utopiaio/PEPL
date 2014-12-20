@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Rev 0.0.3
+# Rev 0.0.4
 
 CACHE:
 index.html
@@ -49,6 +49,8 @@ assets/ionicons/fonts/ionicons.woff
 assets/jquery/jquery-2.1.1.min.js
 assets/moment/moment.min.js
 assets/css/style.css
+assets/pace/pace-theme-flash.css
+assets/pace/pace.min.js
 assets/js/app.js
 assets/js/script.js
 assets/js/controllers/fixtures.js

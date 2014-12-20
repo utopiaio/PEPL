@@ -27,6 +27,9 @@
 
     <base href="/">
 
+    <link rel="stylesheet" href="assets/pace/pace-theme-flash.css">
+    <script src="assets/pace/pace.min.js"></script>
+
     <link rel="stylesheet" href="assets/angular/angular-material.min.css">
     <link rel="stylesheet" href="assets/ionicons/css/ionicons.min.css">
     <!-- <link rel="stylesheet" href="assets/css/animate.min.css"> -->
@@ -37,7 +40,7 @@
 
   <body>
 
-    <md-sidenav md-component-id="menu">
+    <md-sidenav md-component-id="menu" ng-cloak>
       <!--
       <md-toolbar layout-align="center center">
         <h1 class="md-toolbar-tools">P-EPL</h1>
@@ -138,7 +141,8 @@
     <md-button ng-click="appController.toggleMenu()"
                ng-if="showFab"
                aria-label="toggle menu"
-               class="md-fab md-primary md-fab-fixed-bottom-right animate-if" >
+               class="md-fab md-primary md-fab-fixed-bottom-right animate-if"
+               ng-cloak>
       <i class="ion-navicon" style="font-size: 32px;"></i>
     </md-button>
 

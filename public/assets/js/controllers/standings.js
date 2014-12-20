@@ -119,7 +119,7 @@ standingsController.loadFixtures = function ($q, $http) {
     .success(function (data, staus) {
       var fixtures = [];
       angular.forEach(data, function (value, key) {
-        if (value.fixture_team_home_score > -1) {
+        if (moment(value.fixture_time).isSame(moment(), 'day') || value.fixture_team_home_score > -1) {
           value.humanFormat = moment(value.fixture_time).format('MMMM DD, YYYY @ hh:mm A');
           value.unixEpoch = moment(value.fixture_time).valueOf();
           fixtures.push(value);
