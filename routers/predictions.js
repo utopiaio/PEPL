@@ -68,9 +68,9 @@ module.exports = function (dependency) {
                         // }
 
                         // bringing back the excitement of PIFA
-                        // - games that are LOCKED (31 minutes --- the extra 1 minute is for safety)
+                        // - games that are LOCKED, game started (1 minute --- 1 minute is for safety)
                         // - predictions of current user
-                        if (moment().add(31, 'minutes').isAfter(predictions[iPredictions].prediction_fixture.fixture_time) || predictions[iPredictions].prediction_player.player_id === request.session.player_id) {
+                        if (moment().add(1, 'minute').isAfter(predictions[iPredictions].prediction_fixture.fixture_time) || predictions[iPredictions].prediction_player.player_id === request.session.player_id) {
                           coolPredictions.push(predictions[iPredictions]);
                         }
 
