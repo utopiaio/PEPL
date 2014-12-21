@@ -57,7 +57,8 @@ var standingsController = app.controller('standingsController', ['$scope', '$htt
         }
 
         // side
-        else if ((valueF.fixture_team_home_score > valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team > valueF.predictions[username].prediction_away_team)) {
+        else if ((valueF.fixture_team_home_score > valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team > valueF.predictions[username].prediction_away_team) &&
+                 (valueF.fixture_team_home_score < valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team < valueF.predictions[username].prediction_away_team)) {
           if (valueF.fixture_team_home_score > -1) {
             $scope.playersStat[username].W ++;
             $scope.playersStat[username].PTS += 1;
