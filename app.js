@@ -104,7 +104,7 @@ app.use(expressSession({
   store: pgStore,
   secret: cookieSignature,
   cookie: {
-    maxAge: 604800000, // 7 days
+    maxAge: 30 * 86400000, // 30 days
     secure: false,
     httpOnly: true
   },
