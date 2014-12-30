@@ -14,6 +14,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var serveFavicon = require('serve-favicon');
+var compression = require('compression');
 var pg = require('pg');
 var nodemailer = require('nodemailer');
 var socket = require('socket.io');
@@ -80,6 +81,7 @@ pgClient.query(bootSQL, [], function (error, result) {
 app.use(function (request, response, next) {
   request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
 });
+app.use(compression());
 app.use('/app\.cache$', function (request, response, next) {
   // response.status(404).end();
   response.setHeader('Content-Type', 'text/cache-manifest');
