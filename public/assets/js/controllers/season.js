@@ -4,7 +4,7 @@ var seasonController = app.controller('seasonController', ['$scope', '$http', '$
   $http.get('api/fixtures')
     .success(function (data, status) {
       angular.forEach(data, function (value, key) {
-        if (moment().add(30, 'minutes').isAfter(data[key].fixture_time) === true) {
+        if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
           data[key].lock = true;
         }
 
