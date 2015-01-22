@@ -118,7 +118,7 @@ module.exports = function (dependency) {
           pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.body.prediction_fixture], function (error, result) {
             if (error === null) {
               if (result.rowCount === 1) {
-                if (moment().add(30, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(36, 'hours'))) {
+                if (moment().add(1, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(36, 'hours'))) {
                   response.status(408);
                   response.json({});
                 } else {
