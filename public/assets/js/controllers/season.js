@@ -23,14 +23,14 @@ var seasonController = app.controller('seasonController', ['$scope', '$http', '$
 
       $scope.fixtures = data;
 
-      // giving DOM to render our list before scrolling
-      setTimeout(function () {
-        if ($('.scrollTo').length > 1) {
+      if ($('.scrollTo').length > 1) {
+        // giving DOM to render our list before scrolling
+        setTimeout(function () {
           $('html, body').animate({
             scrollTop: $($('.scrollTo')[0]).offset().top
           }, 250, 'linear');
-        }
-      }, 125);
+        }, 250);
+      }
     })
     .error(function (data, status) {
       $scope.fixtures = [];

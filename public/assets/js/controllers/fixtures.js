@@ -5,7 +5,7 @@
     scrollToTheTop();
 
     // filter object to be used to show fixtures that are happening/ed in the
-    // next/past 24 hours
+    // next/past 36 hours
     $scope.showInToday = {showInToday: true};
     $scope.currentUser = Auth.info();
 
@@ -42,7 +42,7 @@
             // we'll set the lock "mode" on
             // you can try --- BUT good luck passing though my security check
             // muhahahahahahah
-            if (moment().add(30, 'minutes').isAfter(data[key].fixture_time) === true) {
+            if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
               data[key].lock = true;
             }
 
