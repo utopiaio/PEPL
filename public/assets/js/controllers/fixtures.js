@@ -5,7 +5,7 @@
     scrollToTheTop();
 
     // filter object to be used to show fixtures that are happening/ed in the
-    // next/past 24 hours
+    // next/past 36 hours
     $scope.showInToday = {showInToday: true};
     $scope.currentUser = Auth.info();
 
@@ -42,13 +42,14 @@
             // we'll set the lock "mode" on
             // you can try --- BUT good luck passing though my security check
             // muhahahahahahah
-            if (moment().add(30, 'minutes').isAfter(data[key].fixture_time) === true) {
+            if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
               data[key].lock = true;
             }
 
             data[key].unixEpoch = moment(data[key].fixture_time).valueOf();
             data[key].age = moment(data[key].fixture_time).fromNow();
-
+            // this accounts for different timezones which isSame "doesn't"
+            // games starting at midnight will no longer be on lock-down
             var dMinus36 = moment(data[key].fixture_time).subtract(36, 'hours'),
                 dPlus36 = moment(data[key].fixture_time).add(36, 'hours');
             data[key].showInToday = moment().isAfter(dMinus36) && moment().isBefore(dPlus36);
