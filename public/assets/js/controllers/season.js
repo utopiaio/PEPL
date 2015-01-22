@@ -23,7 +23,7 @@ var seasonController = app.controller('seasonController', ['$scope', '$http', '$
 
       $scope.fixtures = data;
 
-      if ($('.scrollTo').length > 1) {
+      if ($('.scrollTo').length > 0) {
         // giving DOM to render our list before scrolling
         setTimeout(function () {
           $('html, body').animate({
