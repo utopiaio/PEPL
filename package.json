@@ -24,7 +24,7 @@
     "socket.io-handshake": "0.0.x"
   },
   "engines": {
-    "node": "0.10.32",
-    "npm": "1.4.28"
+    "node": "latest",
+    "npm": "latest"
   }
 }
