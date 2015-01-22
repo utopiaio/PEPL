@@ -11,7 +11,7 @@
 
 ###Game Rules
 - prediction is only allowed on matches that will begin in the next 36 hours
-- predictions are LOCKED 30 minutes prior to kickoff
+- predictions are LOCKED 1 minute prior to kickoff
 - once a prediction is sent in, it's FINAL
 
 ###Notes from MaMoe
