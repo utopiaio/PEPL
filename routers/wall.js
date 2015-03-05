@@ -25,7 +25,7 @@ module.exports = function (dependency) {
                     lPlayers = players.length;
 
                 for (; iMessages < lMessages; iMessages++) {
-                  if (moment(messages[iMessages].wall_timestamp).add(14, 'days').isAfter(moment()) === true) {
+                  if (moment(messages[iMessages].wall_timestamp).add(90, 'days').isAfter(moment()) === true) {
                     iPlayers = 0;
                     for (; iPlayers < lPlayers; iPlayers++) {
                       if (messages[iMessages].wall_player === players[iPlayers].player_id) {
