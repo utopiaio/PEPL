@@ -38,7 +38,7 @@
               }
             }
 
-            // if fixture time is less than 30 minutes away
+            // if fixture time is less than 1 minute away
             // we'll set the lock "mode" on
             // you can try --- BUT good luck passing though my security check
             // muhahahahahahah
@@ -50,8 +50,8 @@
             data[key].age = moment(data[key].fixture_time).fromNow();
             // this accounts for different timezones which isSame "doesn't"
             // games starting at midnight will no longer be on lock-down
-            var dMinus36 = moment(data[key].fixture_time).subtract(300, 'hours'),
-                dPlus36 = moment(data[key].fixture_time).add(300, 'hours');
+            var dMinus36 = moment(data[key].fixture_time).subtract(36, 'hours'),
+                dPlus36 = moment(data[key].fixture_time).add(36, 'hours');
             data[key].showInToday = moment().isAfter(dMinus36) && moment().isBefore(dPlus36);
             /**
              * 45 minutes - first half
