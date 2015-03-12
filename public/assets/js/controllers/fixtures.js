@@ -42,9 +42,9 @@
             // we'll set the lock "mode" on
             // you can try --- BUT good luck passing though my security check
             // muhahahahahahah
-            // if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
-              data[key].lock = false;
-            // }
+            if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
+              data[key].lock = true;
+            }
 
             data[key].unixEpoch = moment(data[key].fixture_time).valueOf();
             data[key].age = moment(data[key].fixture_time).fromNow();
@@ -62,8 +62,7 @@
              * grand total of...drum roll
              * 107 minutes
              */
-            // data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
-            data[key].gameIsOver = false;
+            data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
             data[key].humanFormat = moment(data[key].fixture_time).format('MMMM DD, YYYY @ hh:mm A');
             data[key].predictions = {
               prediction_fixture: data[key].fixture_id,
