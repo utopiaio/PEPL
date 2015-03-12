@@ -62,7 +62,8 @@
              * grand total of...drum roll
              * 107 minutes
              */
-            data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
+            // data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
+            data[key].gameIsOver = false;
             data[key].humanFormat = moment(data[key].fixture_time).format('MMMM DD, YYYY @ hh:mm A');
             data[key].predictions = {
               prediction_fixture: data[key].fixture_id,
