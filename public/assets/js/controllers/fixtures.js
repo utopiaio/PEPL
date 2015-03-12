@@ -42,9 +42,9 @@
             // we'll set the lock "mode" on
             // you can try --- BUT good luck passing though my security check
             // muhahahahahahah
-            if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
-              data[key].lock = true;
-            }
+            // if (moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
+              data[key].lock = false;
+            // }
 
             data[key].unixEpoch = moment(data[key].fixture_time).valueOf();
             data[key].age = moment(data[key].fixture_time).fromNow();
