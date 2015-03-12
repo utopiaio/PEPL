@@ -126,15 +126,15 @@ module.exports = function (dependency) {
           pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.body.prediction_fixture], function (error, result) {
             if (error === null) {
               if (result.rowCount === 1) {
-                if (moment().add(1, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(36, 'hours'))) {
-                  response.status(408);
-                  response.json({});
-                } else {
+                // if (moment().add(1, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(36, 'hours'))) {
+                //   response.status(408);
+                //   response.json({});
+                // } else {
                   pgClient.query('INSERT INTO predictions (prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp) VALUES ($1, $2, $3, $4, $5) RETURNING prediction_id, prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp;', [request.body.prediction_fixture, request.session.player_id, request.body.prediction_home_team, request.body.prediction_away_team, moment().toDate()], function (error, result) {
                     response.status(error === null ? 202 : 409);
                     response.json(error === null ? result.rows[0] : {});
                   });
-                }
+                // }
               } else {
                 response.status(404);
                 response.json({});
