@@ -34,7 +34,7 @@ module.exports = function (dependency) {
                       }
                     }
                   } else {
-                    // wall messages older than 2 weeks are deleted!
+                    // wall messages older than 90 days are deleted!
                     // PS:
                     // all messages will be returned (stored before deletion)
                     pgClient.query('DELETE FROM wall WHERE wall_id=$1', [messages[iMessages].wall_id]);
