@@ -50,8 +50,8 @@
             data[key].age = moment(data[key].fixture_time).fromNow();
             // this accounts for different timezones which isSame "doesn't"
             // games starting at midnight will no longer be on lock-down
-            var dMinus72 = moment(data[key].fixture_time).subtract(72, 'hours'),
-                dPlus72 = moment(data[key].fixture_time).add(72, 'hours');
+            var dMinus72 = moment(data[key].fixture_time).subtract(1000, 'hours'),
+                dPlus72 = moment(data[key].fixture_time).add(1000, 'hours');
             data[key].showInToday = moment().isAfter(dMinus72) && moment().isBefore(dPlus72);
             /**
              * 45 minutes - first half
