@@ -34,7 +34,7 @@
 
       $http.get('api/fixtures')
         .success(function(data, status, headers, config) {
-          angular.forEach(data, function (value, key) {
+          angular.forEach(data, function(value, key) {
             // if payer already predicted for fixture
             // we'll set the lock "mode" on
             for(i = 0; i < l; i++) {

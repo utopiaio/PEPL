@@ -944,7 +944,7 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
 
       $http.get('api/fixtures')
         .success(function(data, status, headers, config) {
-          angular.forEach(data, function (value, key) {
+          angular.forEach(data, function(value, key) {
             // if payer already predicted for fixture
             // we'll set the lock "mode" on
             for(i = 0; i < l; i++) {

@@ -68,7 +68,7 @@
                     </md-button>
                   </div>
 
-                  <div flex layout="row" layout-align="space-around center" ng-if="fixture.showAdminForm === false && fixture.gameIsOver === true && currentUser.player_type === 'ADMINISTRATOR'">
+                  <div flex layout="row" layout-align="space-around center" ng-if="fixture.showAdminForm === false && fixture.gameIsOver === true && fixtures.currentUser.player_type === 'ADMINISTRATOR'">
                     <md-button ng-click="fixture.showAdminForm = true;" ng-disabled="xhrInProgress" aria-label="activate player" class="md-fab md-primary" >
                       <i class="ion-ios-locked-outline icon-lg"></i>
                     </md-button>
