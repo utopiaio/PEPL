@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Rev 0.1.4
+# Rev 0.1.5
 
 CACHE:
 # css
@@ -8,6 +8,9 @@ bower_components/ionicons/css/ionicons.min.css
 bower_components/bootstrap/dist/css/bootstrap.min.css
 bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css
 assets/css/style.css
+
+# js
+dist/js/pepl.js
 
 # fonts
 bower_components/ionicons/fonts/ionicons.ttf?v=2.0.0
