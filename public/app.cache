@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Rev 0.1.5
+# Rev 0.1.6
 
 CACHE:
 # css
@@ -22,24 +22,24 @@ assets/fonts/clearsans/WOFF/ClearSans-Thin.woff
 # images
 assets/images/carlostocat.gif
 assets/images/epl.png
+assets/images/teams/AFC-Bournemouth.png
 assets/images/teams/Arsenal.png
 assets/images/teams/Aston-Villa.png
-assets/images/teams/Burnley.png
 assets/images/teams/Chelsea.png
 assets/images/teams/Crystal-Palace.png
 assets/images/teams/Everton.png
-assets/images/teams/Hull-City.png
 assets/images/teams/Leicester-City.png
 assets/images/teams/Liverpool.png
 assets/images/teams/Manchester-City.png
 assets/images/teams/Manchester-United.png
 assets/images/teams/Newcastle-United.png
-assets/images/teams/QPR.png
+assets/images/teams/Norwich-City.png
 assets/images/teams/Southampton.png
 assets/images/teams/Stock-City.png
 assets/images/teams/Sunderland.png
 assets/images/teams/Swansea-City.png
 assets/images/teams/Tottenham-Hotspur.png
+assets/images/teams/Watford.png
 assets/images/teams/West-Bromwich-Albion.png
 assets/images/teams/West-Ham-United.png
 
