@@ -759,26 +759,26 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
     vm.showFab = false;
     // we need reload where socket.io fails :(
     // $rootScope.iPhone = $window.navigator.platform.search(/iPhone/ig) === -1 ? false : true;
-    $rootScope.teams = ['Arsenal',
-                        'Aston-Villa',
-                        'Burnley',
-                        'Chelsea',
-                        'Crystal-Palace',
-                        'Everton',
-                        'Hull-City',
-                        'Leicester-City',
-                        'Liverpool',
-                        'Manchester-City',
-                        'Manchester-United',
-                        'Newcastle-United',
-                        'QPR',
-                        'Southampton',
-                        'Stock-City',
-                        'Sunderland',
-                        'Swansea-City',
-                        'Tottenham-Hotspur',
-                        'West-Bromwich-Albion',
-                        'West-Ham-United'];
+    vm.teams = ['AFC-Bournemouth',
+                'Arsenal',
+                'Aston-Villa',
+                'Chelsea',
+                'Crystal-Palace',
+                'Everton',
+                'Leicester-City',
+                'Liverpool',
+                'Manchester-City',
+                'Manchester-United',
+                'Newcastle-United',
+                'Norwich-City',
+                'Southampton',
+                'Stock-City',
+                'Sunderland',
+                'Swansea-City',
+                'Tottenham-Hotspur',
+                'Watford',
+                'West-Bromwich-Albion',
+                'West-Ham-United'];
 
     $rootScope.$on('$routeChangeError', function(event, current, previous, rejection) {
       console.error(rejection);
