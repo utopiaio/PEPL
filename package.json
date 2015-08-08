@@ -29,7 +29,7 @@
     "gulp-concat": "^2.4.3"
   },
   "engines": {
-    "node": "0.12.6",
+    "node": "latest",
     "npm": "latest"
   },
   "scripts": {
