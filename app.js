@@ -30,10 +30,12 @@ var fixtures = require('./routers/fixtures');
 var predictions = require('./routers/predictions');
 var wall = require('./routers/wall');
 
+var pgDevConnectionString = 'tcp://moe:@127.0.0.1:5432/pepl';
+
 // PG Session store
-var pgStore = new (connectPgSimple(expressSession))({
+var pgStore = new(connectPgSimple(expressSession))({
   pg: pg,
-  conString: process.env.DATABASE_URL || 'tcp://postgres:password@127.0.0.1:5432/pepl'
+  conString: process.env.DATABASE_URL || pgDevConnectionString
 });
 // sockets is where we're going to keep all those sockets that are connected
 // {username: socket}
@@ -54,7 +56,7 @@ var emailTransporter = nodemailer.createTransport({
   auth: emailConfig.auth
 });
 
-var pgClient = new pg.Client(process.env.DATABASE_URL || 'tcp://postgres:password@127.0.0.1:5432/pepl');
+var pgClient = new pg.Client(process.env.DATABASE_URL || pgDevConnectionString);
 pgClient.connect();
 
 var app = express();
@@ -65,12 +67,12 @@ app.set('port', process.env.PORT || 8000);
 // Guinness are you watching?
 var bootSQL = "CREATE TABLE IF NOT EXISTS players (player_id serial NOT NULL, player_username character varying(128) NOT NULL, player_password character varying(128) NOT NULL, player_suspended boolean NOT NULL DEFAULT false, player_email character varying(1024), player_type character varying(32) NOT NULL DEFAULT 'NORMAL'::character varying, CONSTRAINT player_pk PRIMARY KEY (player_id), CONSTRAINT player_email_unique UNIQUE (player_email), CONSTRAINT player_username_unique UNIQUE (player_username)); CREATE TABLE IF NOT EXISTS fixtures (fixture_id serial NOT NULL, fixture_team_home character varying(128) NOT NULL DEFAULT 'HOME TEAM'::character varying, fixture_team_away character varying(128) NOT NULL DEFAULT 'AWAY TEAM'::character varying, fixture_time timestamp with time zone NOT NULL DEFAULT now(), fixture_team_home_score integer DEFAULT (-1), fixture_team_away_score integer DEFAULT (-1), CONSTRAINT fixture_pk PRIMARY KEY (fixture_id)); CREATE TABLE IF NOT EXISTS predictions (prediction_id serial NOT NULL, prediction_fixture integer NOT NULL, prediction_player integer NOT NULL, prediction_home_team integer NOT NULL, prediction_away_team integer NOT NULL, prediction_timestamp timestamp with time zone NOT NULL DEFAULT now(), CONSTRAINT prediction_pk PRIMARY KEY (prediction_id), CONSTRAINT prediction_fixture_fk FOREIGN KEY (prediction_fixture) REFERENCES fixtures (fixture_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT prediction_player_fk FOREIGN KEY (prediction_player) REFERENCES players (player_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE, CONSTRAINT prediction_unique UNIQUE (prediction_fixture, prediction_player)); CREATE TABLE IF NOT EXISTS wall (wall_id serial NOT NULL, wall_player integer, wall_message text NOT NULL, wall_timestamp timestamp with time zone NOT NULL DEFAULT now(), CONSTRAINT wall_pk PRIMARY KEY (wall_id), CONSTRAINT wall_player_fk FOREIGN KEY (wall_player) REFERENCES players (player_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE); CREATE TABLE IF NOT EXISTS session (sid character varying NOT NULL, sess json NOT NULL, expire timestamp(6) without time zone NOT NULL, CONSTRAINT session_pkey PRIMARY KEY (sid));";
 
-pgClient.query(bootSQL, [], function (error, result) {
-  if (error === null) {
+pgClient.query(bootSQL, [], function(error, result) {
+  if(error === null) {
     // console.log(result);
 
-    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', '4706da2001c4b6b8dcecafa27c5c4155fc265ee7', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function (error, result) {
-      if (error === null) {
+    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', '4706da2001c4b6b8dcecafa27c5c4155fc265ee7', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function(error, result) {
+      if(error === null) {
         // console.log(result);
       } else {
         // console.log(error);
@@ -84,12 +86,11 @@ pgClient.query(bootSQL, [], function (error, result) {
 
 
 // HTTPS
-app.use(function (request, response, next) {
-  request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
-});
+// app.use(function(request, response, next) {
+//   request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
+// });
 app.use(compression());
-app.use('/app\.cache$', function (request, response, next) {
-  // response.status(404).end();
+app.use('/app\.cache$', function(request, response, next) {
   response.setHeader('Content-Type', 'text/cache-manifest');
   next();
 });
@@ -124,8 +125,8 @@ app.use('/api/signup', signup({pgClient: pgClient, sha1: sha1, emailTransporter:
  * this middle fellow will check for authentication (i.e. session)
  * and will take the appropriate measures
  */
-app.use(/^\/api\/.*/, function (request, response, next) {
-  if (request.session.loggedIn === true) {
+app.use(/^\/api\/.*/, function(request, response, next) {
+  if(request.session.loggedIn === true) {
     next();
   } else {
     response.status(412);
@@ -143,7 +144,7 @@ app.use('/api/wall', wall({pgClient: pgClient, sockets: sockets, moment: moment}
 
 
 // this makes sure angular is in-charge of routing
-app.use(function (request, response) {
+app.use(function(request, response) {
   response.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
@@ -169,7 +170,7 @@ io.use(function(socket, next) {
 });
 
 // if a socket connection has established connection that means it's legit
-io.on('connection', function (socket) {
+io.on('connection', function(socket) {
   // we have a connection
   sockets[socket.handshake.session.player_username] = socket;
 
@@ -177,7 +178,7 @@ io.on('connection', function (socket) {
   // socket.broadcast.json.send({});
 
   // this tells everyone the sad news
-  socket.on('disconnect', function () {
+  socket.on('disconnect', function() {
     delete sockets[socket.handshake.session.player_username];
     // yet another a bit too much info
     // io.emit('message', {});

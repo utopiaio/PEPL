@@ -1,8 +1,8 @@
-module.exports = function (dependency) {
+module.exports = function(dependency) {
   var pgClient = dependency.pgClient,
       moment = dependency.moment;
 
-  return function (request, response, next) {
+  return function(request, response, next) {
     switch(request.method) {
       /**
        * 200 --- all good
@@ -11,20 +11,19 @@ module.exports = function (dependency) {
        * 401 --- unauthorized attempt to access fixture data
        */
       case 'GET':
-        if (request.params.id === undefined) {
-          pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures;', [], function (error, result) {
+        if(request.params.id === undefined) {
+          pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures;', [], function(error, result) {
             response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : 200);
           });
         } else {
-          if (request.session.player_type === 'ADMINISTRATOR') {
-            pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.params.id], function (error, result) {
+          if(request.session.player_type === 'ADMINISTRATOR') {
+            pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.params.id], function(error, result) {
               response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 404);
               response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
             });
           } else {
-            response.status(401);
-            response.json({});
+            response.status(401).end();
           }
         }
       break;
@@ -35,14 +34,13 @@ module.exports = function (dependency) {
        * 409 --- conflict with constraint
        */
       case 'POST':
-        if (request.session.player_type === 'ADMINISTRATOR') {
-          pgClient.query('INSERT INTO fixtures (fixture_team_home, fixture_team_away, fixture_time) VALUES ($1, $2, $3) RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, moment(request.body.fixture_time).toDate()], function (error, result) {
+        if(request.session.player_type === 'ADMINISTRATOR') {
+          pgClient.query('INSERT INTO fixtures (fixture_team_home, fixture_team_away, fixture_time) VALUES ($1, $2, $3) RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time;', [request.body.fixture_team_home, request.body.fixture_team_away, moment(request.body.fixture_time).toDate()], function(error, result) {
             response.status(error === null ? 202 : 409);
             response.json(error === null ? result.rows[0] : {});
           });
         } else {
-          response.status(401);
-          response.json({});
+          response.status(401).end();
         }
       break;
 
@@ -53,14 +51,13 @@ module.exports = function (dependency) {
        * 404 --- trying to update a record that does not exist
        */
       case 'PUT':
-        if (request.session.player_type === 'ADMINISTRATOR') {
-          pgClient.query('UPDATE fixtures SET fixture_team_home=$1, fixture_team_away=$2, fixture_time=$3, fixture_team_home_score=$4, fixture_team_away_score=$5 WHERE fixture_id=$6 RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score;', [request.body.fixture_team_home, request.body.fixture_team_away, moment(request.body.fixture_time).toDate(), request.body.fixture_team_home_score, request.body.fixture_team_away_score, request.params.id], function (error, result) {
+        if(request.session.player_type === 'ADMINISTRATOR') {
+          pgClient.query('UPDATE fixtures SET fixture_team_home=$1, fixture_team_away=$2, fixture_time=$3, fixture_team_home_score=$4, fixture_team_away_score=$5 WHERE fixture_id=$6 RETURNING fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score;', [request.body.fixture_team_home, request.body.fixture_team_away, moment(request.body.fixture_time).toDate(), request.body.fixture_team_home_score, request.body.fixture_team_away_score, request.params.id], function(error, result) {
             response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
           });
         } else {
-          response.status(401);
-          response.json({});
+          response.status(401).end();
         }
       break;
 
@@ -71,20 +68,17 @@ module.exports = function (dependency) {
        * 404 --- trying to delete a record that doesn't exist
        */
       case 'DELETE':
-        if (request.session.player_type === 'ADMINISTRATOR') {
-          pgClient.query('DELETE FROM fixtures where fixture_id=$1', [request.params.id], function (error, result) {
-            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
-            response.json({});
+        if(request.session.player_type === 'ADMINISTRATOR') {
+          pgClient.query('DELETE FROM fixtures where fixture_id=$1', [request.params.id], function(error, result) {
+            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400).end();
           });
         } else {
-          response.status(401);
-          response.json({});
+          response.status(401).end();
         }
       break;
 
       default:
-        response.status(405);
-        response.json({});
+        response.status(405).end();
       break;
     }
   };

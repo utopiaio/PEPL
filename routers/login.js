@@ -1,8 +1,8 @@
-module.exports = function (dependency) {
+module.exports = function(dependency) {
   var pgClient = dependency.pgClient,
       sha1 = dependency.sha1;
 
-  return function (request, response, next) {
+  return function(request, response, next) {
     switch(request.method) {
       /**
        * tells the status of the current user
@@ -34,16 +34,14 @@ module.exports = function (dependency) {
        * 406 --- weired credentials
        */
       case 'POST':
-        if (request.body.ID.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1 && request.body.ID.toLowerCase().length < 3) {
-          response.status(406);
-          response.json({});
+        if(request.body.ID.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1 && request.body.ID.toLowerCase().length < 3) {
+          response.status(406).end();
         } else {
           pgClient.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE (player_username=$1 OR player_email=$1) AND player_password=$2 AND player_suspended=$3', [request.body.ID.toLowerCase(), sha1(String(request.body.password)), false], function (error, result) {
-            if (error) {
-              response.status(400);
-              response.json({});
+            if(error) {
+              response.status(400).end();
             } else {
-              if (result.rowCount === 1) {
+              if(result.rowCount === 1) {
                 request.session.loggedIn = true;
                 request.session.player_id = result.rows[0].player_id;
                 request.session.player_username = result.rows[0].player_username;
@@ -60,8 +58,7 @@ module.exports = function (dependency) {
                   player_suspended: result.rows[0].player_suspended
                 });
               } else {
-                response.status(401);
-                response.json({});
+                response.status(401).end();
               }
             }
           });
@@ -74,19 +71,16 @@ module.exports = function (dependency) {
        * 404 --- there's no session to delete
        */
       case 'DELETE':
-        if (request.session.loggedIn === true) {
+        if(request.session.loggedIn === true) {
           delete request.session.loggedIn;
-          response.status(202);
+          response.status(202).end();
         } else {
-          response.status(404);
+          response.status(404).end();
         }
-
-        response.json({});
       break;
 
       default:
-        response.status(405);
-        response.json({});
+        response.status(405).end();
       break;
     }
   };

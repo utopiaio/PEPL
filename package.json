@@ -2,29 +2,40 @@
   "name": "PEPL",
   "author": "Moe Szyslak <moe.duffdude@gmail.com>",
   "description": "Prediction English Premier League",
-  "version": "0.0.1",
-  "repository": "https://github.com/moeduffdude/pepl",
+  "version": "0.0.2",
+  "repository": "https://github.com/moe-szyslak/pepl",
   "main": "app.js",
+  "license": "MIT",
   "dependencies": {
-    "body-parser": "1.10.x",
-    "compression": "1.2.x",
-    "connect": "3.3.x",
-    "connect-pg-simple": "2.1.x",
-    "cookie-parser": "1.3.x",
-    "csurf": "1.6.x",
-    "express": "4.10.x",
-    "express-session": "1.9.x",
-    "moment": "^2.8.4",
-    "morgan": "1.5.x",
-    "nodemailer": "1.3.x",
-    "pg": "4.0.x",
-    "serve-favicon": "2.1.x",
-    "sessionstore": "1.0.x",
-    "socket.io": "1.2.x",
-    "socket.io-handshake": "0.0.x"
+    "body-parser": "^1.10.2",
+    "compression": "^1.2.2",
+    "connect": "^3.3.5",
+    "connect-pg-simple": "^3.0.1",
+    "cookie-parser": "^1.3.5",
+    "csurf": "^1.6.6",
+    "express": "^4.10.8",
+    "express-session": "^1.9.3",
+    "moment": "^2.10.6",
+    "morgan": "^1.5.3",
+    "nodemailer": "^1.3.4",
+    "pg": "^4.0.0",
+    "serve-favicon": "^2.1.7",
+    "sessionstore": "^1.0.6",
+    "socket.io": "^1.3.6",
+    "socket.io-handshake": "0.0.10"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.4.3",
+    "gulp-livereload": "^3.8.0",
+    "gulp-rename": "^1.2.2"
   },
   "engines": {
     "node": "latest",
     "npm": "latest"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "postinstall": "bower install"
   }
 }
