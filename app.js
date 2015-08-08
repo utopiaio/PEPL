@@ -71,6 +71,12 @@ pgClient.query(bootSQL, [], function(error, result) {
   if(error === null) {
     // console.log(result);
 
+    pgClient.query('DELETE FROM fixtures;', function(error, result) {
+      if(error === null) {
+        console.log('season flushed!');
+      }
+    });
+
     pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', 'a809c27618f810242e3f87cf37fe600d20a28550', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function(error, result) {
       if(error === null) {
         // console.log(result);
