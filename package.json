@@ -31,8 +31,5 @@
   "engines": {
     "node": "latest",
     "npm": "latest"
-  },
-  "scripts": {
-    "postinstall": "bower install"
   }
 }
