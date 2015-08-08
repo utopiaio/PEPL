@@ -1,9 +1,9 @@
-module.exports = function (dependency) {
+module.exports = function(dependency) {
   var pgClient = dependency.pgClient,
       emailTransporter = dependency.emailTransporter,
       emailConfig = dependency.emailConfig;
 
-  return function (request, response, next) {
+  return function(request, response, next) {
     /**
      * this is the FULL rest implementation of players table
      * with a couple of functions added
@@ -19,23 +19,22 @@ module.exports = function (dependency) {
        * 404 --- trying to access player's info that doesn't exist
        */
       case 'GET':
-        if (request.params.id === undefined) {
+        if(request.params.id === undefined) {
           // i need a peak on the email to decide whether or not it's legit
           // before i approve it
           var SQL = request.session.player_type === 'ADMINISTRATOR' ? 'SELECT player_id, player_username, player_email, player_suspended FROM players;' : 'SELECT player_id, player_username, player_suspended FROM players;';
 
-          pgClient.query(SQL, [], function (error, result) {
+          pgClient.query(SQL, [], function(error, result) {
             response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : []);
           });
-        } else if (request.session.player_id === Number(request.params.id)) {
-          pgClient.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE player_id=$1;', [request.params.id], function (error, result) {
+        } else if(request.session.player_id === Number(request.params.id)) {
+          pgClient.query('SELECT player_id, player_username, player_suspended, player_email, player_type FROM players WHERE player_id=$1;', [request.params.id], function(error, result) {
             response.status(error === null ? (result.rowCount === 1 ? 200 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
           });
         } else {
-          response.status(403);
-          response.json({})
+          response.status(403).end();
         }
       break;
 
@@ -46,13 +45,13 @@ module.exports = function (dependency) {
        * 404 --- trying to update a player that doesn't exist
        */
       case 'PUT':
-        if (request.session.player_type === 'ADMINISTRATOR') {
+        if(request.session.player_type === 'ADMINISTRATOR') {
           // someone needs to look after you mitches!
-          pgClient.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_email, player_suspended, player_type;', [request.body.player_suspended, request.params.id], function (error, result) {
+          pgClient.query('UPDATE players SET player_suspended=$1 WHERE player_id=$2 RETURNING player_id, player_username, player_email, player_suspended, player_type;', [request.body.player_suspended, request.params.id], function(error, result) {
             response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
             response.json(error === null ? (result.rowCount === 1 ? result.rows[0] : {}) : {});
 
-            if (result && result.rowCount === 1) {
+            if(result && result.rowCount === 1) {
               var mailOptions = {
                 from: emailConfig.from,
                 to: result.rows[0].player_email,
@@ -61,14 +60,13 @@ module.exports = function (dependency) {
                 html: '@<b>'+ result.rows[0].player_username +'</b><br><i>'+ result.rows[0].player_email +'</i><br><p>President of PIFA, MaMoe</p>'
               };
 
-              emailTransporter.sendMail(mailOptions, function (error, info) {
+              emailTransporter.sendMail(mailOptions, function(error, info) {
                 console.log(error === null ? info : error);
               });
             }
           });
         } else {
-          response.status(401);
-          response.json({});
+          response.status(401).end();
         }
       break;
 
@@ -79,20 +77,17 @@ module.exports = function (dependency) {
        * 404 --- trying to delete a player that's not in the "list"
        */
       case 'DELETE':
-        if (request.session.player_type === 'ADMINISTRATOR') {
-          pgClient.query('DELETE FROM players where player_id=$1', [request.params.id], function (error, result) {
-            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400);
-            response.json({});
+        if(request.session.player_type === 'ADMINISTRATOR') {
+          pgClient.query('DELETE FROM players where player_id=$1', [request.params.id], function(error, result) {
+            response.status(error === null ? (result.rowCount === 1 ? 202 : 404) : 400).end();
           });
         } else {
-          response.status(401);
-          response.json({});
+          response.status(401).end();
         }
       break;
 
       default:
-        response.status(405);
-        response.json({});
+        response.status(405).end();
       break;
     }
   };

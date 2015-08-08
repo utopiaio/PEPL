@@ -1,161 +1,114 @@
-var standingsController = app.controller('standingsController', ['$scope', '$http', '$filter',  'Auth', 'Toast', 'loadPlayers', 'loadFixtures', 'loadPredictions', function ($scope, $http, $filter, Auth, Toast, loadPlayers, loadFixtures, loadPredictions) {
-  scrollToTheTop();
+;(function(angular) {
+  'use strict';
 
-  /**
-   * RULE
-   *
-   * SO   spot-on 3 PTS
-   * GD   gold difference 2 PTS
-   * W    side 1 PTS
-   * L    wrong 0 PTS
-   * F    forfeit -1 PTS
-   */
+  angular.module('pepl')
+    .controller('StandingsController', StandingsController);
 
-  $scope.players = loadPlayers;
-  $scope.fixtures = loadFixtures; // the fixtures that are stored here are the ones that are "completed"
-  $scope.predictions = loadPredictions;
-  $scope.currentPlayer = Auth.info();
+  StandingsController.$inject = ['$http', '$filter',  'Auth', 'Toast', 'loadPlayers', 'loadFixtures', 'loadPredictions'];
 
-  // initiating players' stat
-  $scope.playersStat = {}; // {'username': {SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0}}
-  angular.forEach($scope.players, function (value, key) {
-    $scope.playersStat[value.player_username] = {$username: value.player_username, SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0};
-  });
+  function StandingsController($http, $filter, Auth, Toast, loadPlayers, loadFixtures, loadPredictions) {
+    var vm = this;
 
-  // we'll loop through fixtures and associate em' with predictions
-  angular.forEach($scope.fixtures, function (valueF, keyF) {
-    $scope.fixtures[keyF].predictions = {};
+    /**
+     * RULE
+     *
+     * SO   spot-on 3 PTS
+     * GD   gold difference 2 PTS
+     * W    side 1 PTS
+     * L    wrong 0 PTS
+     * F    forfeit -1 PTS
+     */
+    vm.players = loadPlayers;
+    vm.fixtures = loadFixtures; // the fixtures that are stored here are the ones that are "completed"
+    vm.predictions = loadPredictions;
+    vm.currentPlayer = Auth.info();
 
-    angular.forEach($scope.predictions, function (valueP, keyP) {
-      if (valueF.fixture_id === valueP.prediction_fixture.fixture_id) {
-        $scope.fixtures[keyF].predictions[valueP.prediction_player.player_username] = valueP;
-      }
-    });
-  });
-
-  // yes more loop
-  angular.forEach($scope.playersStat, function (stat, username) {
-    angular.forEach($scope.fixtures, function (valueF, keyF) {
-      // show me what you got little mama
-      if (valueF.predictions.hasOwnProperty(username) === true) {
-        // spot-on
-        if ((valueF.fixture_team_home_score === valueF.predictions[username].prediction_home_team) && (valueF.fixture_team_away_score === valueF.predictions[username].prediction_away_team)) {
-          if (valueF.fixture_team_home_score > -1) {
-            $scope.playersStat[username].SO ++;
-            $scope.playersStat[username].PTS += 3;
-            $scope.fixtures[keyF].predictions[username].PTS = 3;
-          }
-        }
-
-        // goal difference
-        else if ((valueF.fixture_team_home_score - valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team - valueF.predictions[username].prediction_away_team)) {
-          if (valueF.fixture_team_home_score > -1) {
-            $scope.playersStat[username].GD ++;
-            $scope.playersStat[username].PTS += 2;
-            $scope.fixtures[keyF].predictions[username].PTS = 2;
-          }
-        }
-
-        // side
-        else if ((valueF.fixture_team_home_score > valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team > valueF.predictions[username].prediction_away_team) &&
-                 (valueF.fixture_team_home_score < valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team < valueF.predictions[username].prediction_away_team)) {
-          if (valueF.fixture_team_home_score > -1) {
-            $scope.playersStat[username].W ++;
-            $scope.playersStat[username].PTS += 1;
-            $scope.fixtures[keyF].predictions[username].PTS = 1;
-          }
-        }
-
-        // miiiiiiiiiiiiiiith
-        else {
-          if (valueF.fixture_team_home_score > -1) {
-            $scope.playersStat[username].L ++;
-            $scope.fixtures[keyF].predictions[username].PTS = 0;
-          }
-        }
-      }
-
-      // forfeit
-      else {
-        if (valueF.fixture_team_home_score > -1) {
-          $scope.playersStat[username].F ++;
-          $scope.playersStat[username].PTS -= 1;
-          $scope.fixtures[keyF].predictions[username] = {PTS: -1};
-        }
-      }
-    });
-  });
-
-  $scope.fixtures = $filter('orderBy')($scope.fixtures, 'unixEpoch', true);
-
-  /**
-   * there's no turning back now
-   * i was wrong, so wrong! (Prometheus)
-   */
-  $scope.statOrdered = [];
-  angular.forEach($scope.playersStat, function (value, key) {
-    $scope.statOrdered.push(value);
-  });
-
-  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'F', false);
-  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'L', false);
-  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'W', true);
-  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'GD', true);
-  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'SO', true);
-  $scope.statOrdered = $filter('orderBy')($scope.statOrdered, 'PTS', true);
-
-  $scope.standingsController = this;
-}]);
-
-
-
-standingsController.loadPlayers = function ($q, $http) {
-  var deferred = $q.defer();
-
-  $http.get('api/players')
-    .success(function (data, staus) {
-      deferred.resolve(data);
-    })
-    .error(function (data, staus) {
-      deferred.reject();
+    // initiating players' stat
+    vm.playersStat = {}; // {'username': {SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0}}
+    angular.forEach(vm.players, function(value, key) {
+      vm.playersStat[value.player_username] = {$username: value.player_username, SO: 0, GD: 0, W: 0, L: 0, F: 0, PTS: 0};
     });
 
-  return deferred.promise;
-};
+    // we'll loop through fixtures and associate em' with predictions
+    angular.forEach(vm.fixtures, function(valueF, keyF) {
+      vm.fixtures[keyF].predictions = {};
 
-standingsController.loadFixtures = function ($q, $http) {
-  var deferred = $q.defer();
-
-  $http.get('api/fixtures')
-    .success(function (data, staus) {
-      var fixtures = [];
-      angular.forEach(data, function (value, key) {
-        if (moment(value.fixture_time).isSame(moment(), 'day') || value.fixture_team_home_score > -1) {
-          value.humanFormat = moment(value.fixture_time).format('MMMM DD, YYYY @ hh:mm A');
-          value.unixEpoch = moment(value.fixture_time).valueOf();
-          fixtures.push(value);
+      angular.forEach(vm.predictions, function(valueP, keyP) {
+        if(valueF.fixture_id === valueP.prediction_fixture.fixture_id) {
+          vm.fixtures[keyF].predictions[valueP.prediction_player.player_username] = valueP;
         }
       });
+    });
 
-      deferred.resolve(fixtures);
-    })
-    .error(function (data, staus) {
-      deferred.reject();
-    })
+    // yes more loop
+    angular.forEach(vm.playersStat, function(stat, username) {
+      angular.forEach(vm.fixtures, function(valueF, keyF) {
+        // show me what you got little mama
+        if(valueF.predictions.hasOwnProperty(username) === true) {
+          // spot-on
+          if((valueF.fixture_team_home_score === valueF.predictions[username].prediction_home_team) && (valueF.fixture_team_away_score === valueF.predictions[username].prediction_away_team)) {
+            if(valueF.fixture_team_home_score > -1) {
+              vm.playersStat[username].SO ++;
+              vm.playersStat[username].PTS += 3;
+              vm.fixtures[keyF].predictions[username].PTS = 3;
+            }
+          }
 
-  return deferred.promise;
-};
+          // goal difference
+          else if((valueF.fixture_team_home_score - valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team - valueF.predictions[username].prediction_away_team)) {
+            if(valueF.fixture_team_home_score > -1) {
+              vm.playersStat[username].GD ++;
+              vm.playersStat[username].PTS += 2;
+              vm.fixtures[keyF].predictions[username].PTS = 2;
+            }
+          }
 
-standingsController.loadPredictions = function ($q, $http) {
-  var deferred = $q.defer();
+          // side
+          else if((valueF.fixture_team_home_score > valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team > valueF.predictions[username].prediction_away_team) &&
+                  (valueF.fixture_team_home_score < valueF.fixture_team_away_score) === (valueF.predictions[username].prediction_home_team < valueF.predictions[username].prediction_away_team)) {
+            if(valueF.fixture_team_home_score > -1) {
+              vm.playersStat[username].W ++;
+              vm.playersStat[username].PTS += 1;
+              vm.fixtures[keyF].predictions[username].PTS = 1;
+            }
+          }
 
-  $http.get('api/predictions')
-    .success(function (data, staus) {
-      deferred.resolve(data);
-    })
-    .error(function (data, staus) {
-      deferred.reject();
-    })
+          // miiiiiiiiiiiiiiith
+          else {
+            if(valueF.fixture_team_home_score > -1) {
+              vm.playersStat[username].L ++;
+              vm.fixtures[keyF].predictions[username].PTS = 0;
+            }
+          }
+        }
 
-  return deferred.promise;
-};
+        // forfeit
+        else {
+          if(valueF.fixture_team_home_score > -1) {
+            vm.playersStat[username].F ++;
+            vm.playersStat[username].PTS -= 1;
+            vm.fixtures[keyF].predictions[username] = {PTS: -1};
+          }
+        }
+      });
+    });
+
+    vm.fixtures = $filter('orderBy')(vm.fixtures, 'unixEpoch', true);
+
+    /**
+     * there's no turning back now
+     * i was wrong, so wrong! (Prometheus)
+     */
+    vm.statOrdered = [];
+    angular.forEach(vm.playersStat, function(value, key) {
+      vm.statOrdered.push(value);
+    });
+
+    vm.statOrdered = $filter('orderBy')(vm.statOrdered, 'F', false);
+    vm.statOrdered = $filter('orderBy')(vm.statOrdered, 'L', false);
+    vm.statOrdered = $filter('orderBy')(vm.statOrdered, 'W', true);
+    vm.statOrdered = $filter('orderBy')(vm.statOrdered, 'GD', true);
+    vm.statOrdered = $filter('orderBy')(vm.statOrdered, 'SO', true);
+    vm.statOrdered = $filter('orderBy')(vm.statOrdered, 'PTS', true);
+  }
+})(window.angular);

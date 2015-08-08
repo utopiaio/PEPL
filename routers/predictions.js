@@ -1,4 +1,4 @@
-module.exports = function (dependency) {
+module.exports = function(dependency) {
   var pgClient = dependency.pgClient,
       moment = dependency.moment;
 
@@ -9,7 +9,7 @@ module.exports = function (dependency) {
    *
    * also we're going to return ALL references, just like Heroku says to do
    */
-  return function (request, response, next) {
+  return function(request, response, next) {
     switch(request.method) {
       /**
        * returns all predictions that are time-locked
@@ -20,22 +20,22 @@ module.exports = function (dependency) {
        * 400 --- bad
        */
       case 'GET':
-        if (request.params.anonymous === undefined) {
+        if(request.params.anonymous === undefined) {
           var players = [],
               fixtures = [],
               predictions = [],
               coolPredictions = [];
 
-          pgClient.query('SELECT player_id, player_username, player_suspended FROM players;', [], function (error, result) {
-            if (error === null) {
+          pgClient.query('SELECT player_id, player_username, player_suspended FROM players;', [], function(error, result) {
+            if(error === null) {
               players = result.rows;
 
-              pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures;', [], function (error, result) {
-                if (error === null) {
+              pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures;', [], function(error, result) {
+                if(error === null) {
                   fixtures = result.rows;
 
-                  pgClient.query('SELECT prediction_id, prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp FROM predictions;', [], function (error, result) {
-                    if (error === null) {
+                  pgClient.query('SELECT prediction_id, prediction_fixture, prediction_player, prediction_home_team, prediction_away_team, prediction_timestamp FROM predictions;', [], function(error, result) {
+                    if(error === null) {
                       predictions = result.rows;
                       var iPredictions = 0,
                           lPredictions = result.rows.length,
@@ -44,19 +44,19 @@ module.exports = function (dependency) {
                           iFixtures = 0,
                           lFixtures = fixtures.length;
 
-                      for (; iPredictions < lPredictions; iPredictions++) {
+                      for(; iPredictions < lPredictions; iPredictions++) {
                         iFixtures = 0;
                         lFixtures = fixtures.length;
-                        for (; iFixtures < lFixtures; iFixtures++) {
-                          if (fixtures[iFixtures].fixture_id === predictions[iPredictions].prediction_fixture) {
+                        for(; iFixtures < lFixtures; iFixtures++) {
+                          if(fixtures[iFixtures].fixture_id === predictions[iPredictions].prediction_fixture) {
                             predictions[iPredictions].prediction_fixture = fixtures[iFixtures];
                           }
                         }
 
                         iPlayers = 0;
                         lPlayers = players.length;
-                        for (; iPlayers < lPlayers; iPlayers++) {
-                          if (predictions[iPredictions].prediction_player === players[iPlayers].player_id) {
+                        for(; iPlayers < lPlayers; iPlayers++) {
+                          if(predictions[iPredictions].prediction_player === players[iPlayers].player_id) {
                             predictions[iPredictions].prediction_player = players[iPlayers];
                           }
                         }
@@ -70,7 +70,7 @@ module.exports = function (dependency) {
                         // bringing back the excitement of PIFA
                         // - games that are LOCKED, game started (1 minute --- 1 minute is for safety)
                         // - predictions of current user
-                        if (moment().add(1, 'minute').isAfter(predictions[iPredictions].prediction_fixture.fixture_time) || predictions[iPredictions].prediction_player.player_id === request.session.player_id) {
+                        if(moment().add(1, 'minute').isAfter(predictions[iPredictions].prediction_fixture.fixture_time) || predictions[iPredictions].prediction_player.player_id === request.session.player_id) {
                           coolPredictions.push(predictions[iPredictions]);
                         }
 
@@ -87,22 +87,19 @@ module.exports = function (dependency) {
                       response.status(200);
                       response.json(coolPredictions);
                     } else {
-                      response.status(400);
-                      response.json({});
+                      response.status(400).end();
                     }
                   });
                 } else {
-                  response.status(400);
-                  response.json({});
+                  response.status(400).end();
                 }
               });
             } else {
-              response.status(400);
-              response.json({});
+              response.status(400).end();
             }
           });
         } else {
-          pgClient.query('SELECT prediction_fixture, prediction_player FROM predictions;', [], function (error, result) {
+          pgClient.query('SELECT prediction_fixture, prediction_player FROM predictions;', [], function(error, result) {
             response.status(error === null ? 200 : 400);
             response.json(error === null ? result.rows : []);
           });
@@ -119,14 +116,14 @@ module.exports = function (dependency) {
        * 409 --- trying to "change" a prediction
        */
       case 'POST':
-        if (typeof request.body.prediction_home_team === 'number' && typeof request.body.prediction_away_team === 'number') {
+        if(typeof request.body.prediction_home_team === 'number' && typeof request.body.prediction_away_team === 'number') {
           request.body.prediction_home_team = Math.abs(Math.floor(request.body.prediction_home_team));
           request.body.prediction_away_team = Math.abs(Math.floor(request.body.prediction_away_team));
 
-          pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.body.prediction_fixture], function (error, result) {
-            if (error === null) {
-              if (result.rowCount === 1) {
-                if (moment().add(1, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(72, 'hours'))) {
+          pgClient.query('SELECT fixture_id, fixture_team_home, fixture_team_away, fixture_time, fixture_team_home_score, fixture_team_away_score FROM fixtures WHERE fixture_id=$1;', [request.body.prediction_fixture], function(error, result) {
+            if(error === null) {
+              if(result.rowCount === 1) {
+                if(moment().add(1, 'minutes').isAfter(moment(result.rows[0].fixture_time)) || moment(result.rows[0].fixture_time).isAfter(moment().add(72, 'hours'))) {
                   response.status(408);
                   response.json({});
                 } else {
@@ -136,23 +133,19 @@ module.exports = function (dependency) {
                   });
                 }
               } else {
-                response.status(404);
-                response.json({});
+                response.status(404).end();
               }
             } else {
-              response.status(400);
-              response.json({});
+              response.status(400).end();
             }
           });
         } else {
-          response.status(400);
-          response.json({});
+          response.status(400).end();
         }
       break;
 
       default:
-        response.status(405);
-        response.json({});
+        response.status(405).end();
       break;
     }
   };

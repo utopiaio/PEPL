@@ -2,11 +2,7 @@
   <div>
     <div layout="row" align="center center">
       <div flex>
-          <md-text-float class="input-search"
-                         type="text"
-                         label="Search"
-                         ng-model="search"
-                         required></md-text-float>
+          <md-text-float class="input-search" type="text" label="Search" ng-model="players.search" required></md-text-float>
       </div>
     </div>
   </div>
@@ -14,11 +10,7 @@
   <md-content>
     <md-list>
 
-      <md-item ng-repeat="player in players | filter:search | orderBy:'player_username'"
-               ng-swipe-right="player.showAction = false;"
-               ng-swipe-left="player.showAction = true;"
-               ng-mouseenter="player.showAction = true;"
-               ng-mouseleave="player.showAction = false;" >
+      <md-item ng-repeat="player in players.players | filter:players.search | orderBy:'player_username'" ng-swipe-right="player.showAction = false;" ng-swipe-left="player.showAction = true;" ng-mouseenter="player.showAction = true;" ng-mouseleave="player.showAction = false;" >
 
         <md-item-content>
           <div class="md-tile-content">
@@ -40,29 +32,19 @@
               <div flex="5" flex-lg="30" flex-gt-lg="30"></div>
 
               <div flex layout="row" layout-align="start center" ng-if="player.player_suspended === true">
-                <md-button ng-click="playersController.changePlayerStatus(player, false)"
-                           ng-disabled="xhrInProgress"
-                           aria-label="activate player"
-                           class="md-fab md-primary" >
+                <md-button ng-click="players.changePlayerStatus(player, false)" ng-disabled="xhrInProgress" aria-label="activate player" class="md-fab md-primary" >
                   <i class="ion-thumbsup" style="font-size: 32px;"></i>
                 </md-button>
               </div>
 
               <div flex layout="row" layout-align="start center" ng-if="player.player_suspended === false">
-                <md-button ng-click="playersController.changePlayerStatus(player, true)"
-                           ng-disabled="xhrInProgress"
-                           aria-label="suspend player"
-                           class="md-fab md-warn" >
+                <md-button ng-click="players.changePlayerStatus(player, true)" ng-disabled="xhrInProgress" aria-label="suspend player" class="md-fab md-warn" >
                   <i class="ion-thumbsdown" style="font-size: 32px;"></i>
                 </md-button>
               </div>
 
               <div flex layout="row" layout-align="end center">
-                <md-button ng-dblclick="playersController.deletePlayer(player)"
-                           ng-swipe-right="playersController.deletePlayer(player)"
-                           ng-disabled="xhrInProgress"
-                           aria-label="suspend player"
-                           class="md-fab md-warn" >
+                <md-button ng-dblclick="players.deletePlayer(player)" ng-swipe-right="players.deletePlayer(player)" ng-disabled="xhrInProgress" aria-label="suspend player" class="md-fab md-warn" >
                   <i class="ion-ios-trash-outline" style="font-size: 32px;"></i>
                 </md-button>
               </div>

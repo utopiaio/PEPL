@@ -1,80 +1,68 @@
-var wallController = app.controller('wallController', ['$scope', '$http', '$filter', '$interval', 'Auth', 'Toast', 'loadMessages', function ($scope, $http, $filter, $interval, Auth, Toast, loadMessages) {
-  scrollToTheTop();
+;(function(angular) {
+  'use strict';
 
-  $scope.currentPlayer = Auth.info();
-  $scope.message = {message: ''};
-  $scope.messages = loadMessages;
+  angular.module('pepl')
+    .controller('WallController', WallController);
 
-  // refresh trash age every minute
-  $interval(function () {
-    angular.forEach($scope.messages, function (value, key) {
-      $scope.messages[key].age = moment(value.wall_timestamp).fromNow();
+  WallController.$inject = ['$scope', '$http', '$filter', '$interval', 'Auth', 'Toast', 'loadMessages'];
+
+  function WallController($scope, $http, $filter, $interval, Auth, Toast, loadMessages) {
+    var vm = this;
+
+    vm.currentPlayer = Auth.info();
+    vm.message = {message: ''};
+    vm.messages = loadMessages;
+    vm.timeStampInterval = undefined;
+
+    // refresh trash age every minute
+    vm.timeStampInterval = $interval(function() {
+      angular.forEach(vm.messages, function(value, key) {
+        vm.messages[key].age = moment(value.wall_timestamp).fromNow();
+      });
+    }, 60000);
+
+    $scope.$on('$destroy', function() {
+      if (angular.isDefined(vm.timeStampInterval)) {
+        $interval.cancel(vm.timeStampInterval);
+      }
     });
-  }, 60000);
 
-  /**
-   * i should have handled the socket connection initiation
-   * via a promise --- while trying to do that, i ran in to some problems
-   */
-  var socket = io.connect();
+    var socket = io.connect();
 
-  socket.on('connect', function () {
-    console.info('holly shit, socket connection established!');
-  });
+    socket.on('connect', function() {
+      console.info('holly shit, socket connection established!');
+    });
 
-  socket.on('message', function (data) {
-    switch (data.mode) {
-      case 'NEW_MESSAGE':
-        data.message.humanFormat = moment(data.message.wall_timestamp).format('MMMM DD, YYYY @ hh:mm A');
-        data.message.age = moment(data.message.wall_timestamp).fromNow();
-        data.message.unixEpoch = moment(data.message.wall_timestamp).valueOf();
-        $scope.messages.push(data.message);
-        $scope.messages = $filter('orderBy')($scope.messages, 'unixEpoch', true);
-        $scope.$digest();
-      break;
+    socket.on('message', function(data) {
+      switch(data.mode) {
+        case 'NEW_MESSAGE':
+          data.message.humanFormat = moment(data.message.wall_timestamp).format('MMMM DD, YYYY @ hh:mm A');
+          data.message.age = moment(data.message.wall_timestamp).fromNow();
+          data.message.unixEpoch = moment(data.message.wall_timestamp).valueOf();
+          vm.messages.push(data.message);
+          vm.messages = $filter('orderBy')(vm.messages, 'unixEpoch', true);
+          vm.$digest();
+        break;
+      };
+    });
+
+    socket.on('connect_error', function() {
+      Toast.show({template: '<md-toast><span flex>TIE!</span></md-toast>'});
+    });
+
+    vm.post = function() {
+      $http.post('api/wall', vm.message)
+        .success(function(data, staus) {
+          data.humanFormat = moment(data.wall_timestamp).format('MMMM DD, YYYY @ hh:mm A');
+          data.age = moment(data.wall_timestamp).fromNow();
+          data.unixEpoch = moment(data.wall_timestamp).valueOf();
+          vm.messages.push(data);
+          vm.messages = $filter('orderBy')(vm.messages, 'unixEpoch', true);
+          vm.message.message = '';
+        })
+        .error(function(data, staus) {
+          Toast.show({template: '<md-toast><span flex>that\'s just too nasty!</span></md-toast>'});
+        });
     };
-  });
-
-  socket.on('connect_error', function () {
-    Toast.show({template: '<md-toast><span flex>TIE!</span></md-toast>'});
-  });
-
-  this.post = function () {
-    $http.post('api/wall', $scope.message)
-      .success(function (data, staus) {
-        data.humanFormat = moment(data.wall_timestamp).format('MMMM DD, YYYY @ hh:mm A');
-        data.age = moment(data.wall_timestamp).fromNow();
-        data.unixEpoch = moment(data.wall_timestamp).valueOf();
-        $scope.messages.push(data);
-        $scope.messages = $filter('orderBy')($scope.messages, 'unixEpoch', true);
-        $scope.message.message = '';
-      })
-      .error(function (data, staus) {
-        Toast.show({template: '<md-toast><span flex>that\'s just too nasty!</span></md-toast>'});
-      });
-  };
-
-  $scope.wallController = this;
-}]);
-
-
-
-wallController.loadMessages = function ($q, $http, $filter) {
-  var deferred = $q.defer();
-  $http.get('api/wall')
-    .success(function (data, staus) {
-      angular.forEach(data, function (value, key) {
-        value.humanFormat = moment(value.wall_timestamp).format('MMMM DD, YYYY @ hh:mm A');
-        value.age = moment(value.wall_timestamp).fromNow();
-        value.unixEpoch = moment(value.wall_timestamp).valueOf();
-      });
-
-      data = $filter('orderBy')(data, 'unixEpoch', true);
-      deferred.resolve(data);
-    })
-    .error(function (data, staus) {
-      deferred.reject();
-    });
-
-  return deferred.promise;
-};
+  }
+})(window.angular);

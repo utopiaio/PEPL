@@ -4,13 +4,11 @@
 
     <div flex flex-lg="50" flex-gt-lg="50" layout="row">
       <div flex layout="row" layout-align="center center" layout-fill>
-        <md-text-float class="input-block" label="Trash (PG-13)" ng-model="message.message"></md-text-float>
+        <md-text-float class="input-block" label="Trash (PG-13)" ng-model="wall.message.message"></md-text-float>
       </div>
       <div flex="5"></div>
       <div flex="20" layout="row" layout-align="center center">
-        <md-button ng-disabled="message.message.length < 3 || xhrInProgress"
-                   ng-click="wallController.post()"
-                   class="md-raised md-primary btn-block">POST</md-button>
+        <md-button ng-disabled="wall.message.message.length < 3 || xhrInProgress" ng-click="wall.post()" class="md-raised md-primary btn-block">POST</md-button>
       </div>
     </div>
 
@@ -22,7 +20,7 @@
 
     <div flex>
       <md-content>
-        <md-item ng-repeat="msg in messages">
+        <md-item ng-repeat="msg in wall.messages">
           <!--
           <div class="md-tile-left"></div>
           -->

@@ -1,24 +1,25 @@
 CACHE MANIFEST
-# Rev 0.1.2
+# Rev 0.1.5
 
 CACHE:
-index.html
-assets/angular/angular-animate.min.js
-assets/angular/angular-aria.min.js
-assets/angular/angular-auth.js
-assets/angular/angular-material.min.css
-assets/angular/angular-material.min.js
-assets/angular/angular-progress.js
-assets/angular/angular-route.min.js
-assets/angular/angular-sanitize.min.js
-assets/angular/angular-toast.js
-assets/angular/angular-touch.min.js
-assets/angular/angular.min.js
+# css
+bower_components/angular-material/angular-material.min.css
+bower_components/ionicons/css/ionicons.min.css
+bower_components/bootstrap/dist/css/bootstrap.min.css
+bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css
+assets/css/style.css
+
+# js
+dist/js/pepl.js
+
+# fonts
+bower_components/ionicons/fonts/ionicons.ttf?v=2.0.0
 assets/fonts/clearsans/WOFF/ClearSans-Light.woff
 assets/fonts/clearsans/WOFF/ClearSans-Medium.woff
 assets/fonts/clearsans/WOFF/ClearSans-Regular.woff
 assets/fonts/clearsans/WOFF/ClearSans-Thin.woff
-assets/hammerjs/hammer.min.js
+
+# images
 assets/images/carlostocat.gif
 assets/images/epl.png
 assets/images/teams/Arsenal.png
@@ -41,24 +42,10 @@ assets/images/teams/Swansea-City.png
 assets/images/teams/Tottenham-Hotspur.png
 assets/images/teams/West-Bromwich-Albion.png
 assets/images/teams/West-Ham-United.png
-assets/ionicons/css/ionicons.min.css
-assets/ionicons/fonts/ionicons.eot
-assets/ionicons/fonts/ionicons.svg
-assets/ionicons/fonts/ionicons.ttf
-assets/ionicons/fonts/ionicons.woff
-assets/jquery/jquery-2.1.1.min.js
-assets/moment/moment.min.js
-assets/css/style.css
-assets/pace/pace-theme-flash.css
-assets/pace/pace.min.js
-assets/js/app.js
-assets/js/script.js
-assets/js/controllers/fixtures.js
-assets/js/controllers/login.js
-assets/js/controllers/players.js
-assets/js/controllers/season.js
-assets/js/controllers/standings.js
-assets/js/controllers/wall.js
+
+# html
+index.html
+views/fixture-new.html
 views/fixtures.html
 views/login.html
 views/players.html
