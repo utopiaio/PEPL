@@ -86,9 +86,9 @@ pgClient.query(bootSQL, [], function(error, result) {
 
 
 // HTTPS
-// app.use(function(request, response, next) {
-//   request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
-// });
+app.use(function(request, response, next) {
+  request.headers['x-forwarded-proto'] === 'https' ? next() : response.redirect(301, 'https://pepl.herokuapp.com');
+});
 app.use(compression());
 app.use('/app\.cache$', function(request, response, next) {
   response.setHeader('Content-Type', 'text/cache-manifest');
