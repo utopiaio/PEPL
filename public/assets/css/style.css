@@ -30,30 +30,6 @@
 
 
 /* Angular.js: START ---------------------------------------------------------*/
-/*
-.animate-view.ng-enter {
-  -webkit-animation: 0.5s fadeInLeft;
-  animation: 0.5s fadeInLeft;
-}
-
-.animate-view.ng-leave {
-  -webkit-animation: 0s fadeInRight;
-  animation: 0s fadeInRight;
-}
-*/
-
-/*
-.animate-if.ng-enter {
-  -webkit-animation: 0.25s fadeInDown;
-  animation: 0.25s fadeInDown;
-}
-
-.animate-if.ng-leave {
-  -webkit-animation: 0.25s fadeOutUp;
-  animation: 0.25s fadeOutUp;
-}
-*/
-
 .animate-if.ng-enter,
 .animate-if.ng-leave.ng-leave-active {
   opacity: 0;

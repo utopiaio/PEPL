@@ -16,8 +16,8 @@
 
       <md-divider></md-divider>
 
-      <div ng-repeat="stat in statOrdered" layout="column">
-        <div layout="row" ng-class="{'it-is-you': stat.$username === currentPlayer.player_username}">
+      <div ng-repeat="stat in standings.statOrdered" layout="column">
+        <div layout="row" ng-class="{'it-is-you': stat.$username === standings.currentPlayer.player_username}">
           <div flex="10" ng-bind="$index+1"></div>
           <div flex="30" ng-bind="stat.$username"></div>
           <div flex="10" ng-bind="stat.SO"></div>
@@ -42,7 +42,7 @@
   <div flex-lg="20" flex-gt-lg="20"></div>
 
   <div flex layout="column" layout-fill>
-    <div ng-repeat="fixture in fixtures" style="padding-top: 16px;">
+    <div ng-repeat="fixture in standings.fixtures" style="padding-top: 16px;">
       <div flex layout="row">
         <div flex layout="column" layout-align="space-around center">
           <img class="club-logo" ng-src="assets/images/teams/{{ fixture.fixture_team_home }}.png">
@@ -73,43 +73,23 @@
       </div>
 
       <div layout="column">
-        <div layout="row"
-             ng-repeat="(player, prediction) in fixture.predictions"
-             ng-class="{'it-is-you': player === currentPlayer.player_username}"
-             style="margin-bottom: 4px;">
+        <div layout="row" ng-repeat="(player, prediction) in fixture.predictions" ng-class="{'it-is-you': player === standings.currentPlayer.player_username}" style="margin-bottom: 4px;">
           <div flex-lg="10" flex-gt-lg="10"></div>
 
-          <div ng-if="prediction.prediction_home_team === undefined"
-               flex layout="row"
-               layout-align="space-around center"><i class="ion-sad-outline"></i></div>
+          <div ng-if="prediction.prediction_home_team === undefined" flex layout="row" layout-align="space-around center"><i class="ion-sad-outline"></i></div>
 
-          <div ng-if="prediction.prediction_home_team !== undefined"
-               flex layout="row"
-               layout-align="space-around center"
-               ng-bind="prediction.prediction_home_team"></div>
+          <div ng-if="prediction.prediction_home_team !== undefined" flex layout="row" layout-align="space-around center" ng-bind="prediction.prediction_home_team"></div>
 
           <div flex="5" layout="row" layout-align="space-around center">-</div>
 
-          <div ng-if="prediction.prediction_away_team === undefined"
-               flex
-               layout="row"
-               layout-align="space-around center"><i class="ion-sad-outline"></i></div>
+          <div ng-if="prediction.prediction_away_team === undefined" flex layout="row" layout-align="space-around center"><i class="ion-sad-outline"></i></div>
 
-          <div ng-if="prediction.prediction_away_team !== undefined"
-               flex layout="row"
-               layout-align="space-around center"
-               ng-bind="prediction.prediction_away_team"></div>
+          <div ng-if="prediction.prediction_away_team !== undefined" flex layout="row" layout-align="space-around center" ng-bind="prediction.prediction_away_team"></div>
 
           <div flex layout="row" layout-align="start center" ng-bind="player"></div>
           <div flex layout="row" layout-align="space-around center">
             <div flex="25" flex-lg="35" flex-gt-lg="35"></div>
-            <div layout="row"
-                 layout-align="center"
-                 flex="50"
-                 flex-lg="30"
-                 flex-gt-lg="30"
-                 class="badge"
-                 ng-bind="prediction.PTS"></div>
+            <div layout="row" layout-align="center" flex="50" flex-lg="30" flex-gt-lg="30" class="badge" ng-bind="prediction.PTS"></div>
             <div flex="25" flex-lg="35" flex-gt-lg="35"></div>
           </div>
 

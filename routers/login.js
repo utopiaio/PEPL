@@ -13,7 +13,7 @@ module.exports = function(dependency) {
        * 404 --- fresh-out the lot
        */
       case 'GET':
-        response.status(request.session.loggedIn === true ? 200 : 404);
+        response.status(request.session.loggedIn === true ? 200 : 401);
         response.json(request.session.loggedIn === true ? {
           player_id: request.session.player_id,
           player_username: request.session.player_username,

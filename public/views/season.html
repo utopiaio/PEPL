@@ -1,12 +1,9 @@
 <div layout="column">
-  <div layout="column" ng-if="currentUser.player_type === 'ADMINISTRATOR'">
+  <div layout="column" ng-if="season.currentUser.player_type === 'ADMINISTRATOR'">
     <div class="moe-separator"></div>
 
     <div layout="row" layout-align="center center">
-      <md-button ng-href="fixture/new"
-                 ng-disabled="xhrInProgress"
-                 aria-label="new fixture"
-                 class="md-fab md-primary" >
+      <md-button ng-href="#/fixture/new" ng-disabled="xhrInProgress" aria-label="new fixture" class="md-fab md-primary" >
         <i class="ion-ios-plus-outline icon-lg"></i>
       </md-button>
     </div>
@@ -17,13 +14,7 @@
   <md-content>
     <md-list>
 
-      <md-item ng-repeat="fixture in fixtures"
-               ng-swipe-right="fixture.showAction = false;"
-               ng-swipe-left="fixture.showAction = true;"
-               ng-mouseenter="fixture.showAction = true;"
-               ng-mouseleave="fixture.showAction = false;"
-               ng-init="fixture.showAdminDeleteForm = false;"
-               ng-class="{'scrollTo': fixture.scrollTo === true}">
+      <md-item ng-repeat="fixture in season.fixtures" ng-swipe-right="fixture.showAction = false;" ng-swipe-left="fixture.showAction = true;" ng-mouseenter="fixture.showAction = true;" ng-mouseleave="fixture.showAction = false;" ng-init="fixture.showAdminDeleteForm = false;" ng-class="{'scrollTo': fixture.scrollTo === true}">
 
           <md-item-content>
             <div class="md-tile-content">
@@ -36,40 +27,27 @@
                 </div>
 
                 <!-- pre-match -->
-                <div flex="25" layout="row"
-                     layout-align="space-around center"
-                     ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === undefined">
+                <div flex="25" layout="row" layout-align="space-around center" ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === undefined">
                   <h3>Vs</h3>
                 </div>
                 <!-- end: pre-match -->
 
                 <!-- lock -->
-                <div flex="25" layout="row"
-                     layout-align="space-around center"
-                     ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === true">
+                <div flex="25" layout="row" layout-align="space-around center" ng-if="fixture.fixture_team_home_score === -1 && fixture.lock === true">
                   <i class="ion-ios-locked-outline icon-lg"></i>
                 </div>
                 <!-- end: lock -->
 
                 <!-- post-match -->
-                <div flex="10"
-                     layout="row"
-                     layout-align="end center"
-                     ng-if="fixture.fixture_team_home_score > -1">
+                <div flex="10" layout="row" layout-align="end center" ng-if="fixture.fixture_team_home_score > -1">
                   <h2 ng-bind="fixture.fixture_team_home_score"></h2>
                 </div>
 
-                <div flex="5"
-                     layout="row"
-                     layout-align="space-around center"
-                     ng-if="fixture.fixture_team_home_score > -1">
+                <div flex="5" layout="row" layout-align="space-around center" ng-if="fixture.fixture_team_home_score > -1">
                   <h2>-</h2>
                 </div>
 
-                <div flex="10"
-                     layout="row"
-                     layout-align="start center"
-                     ng-if="fixture.fixture_team_home_score > -1">
+                <div flex="10" layout="row" layout-align="start center" ng-if="fixture.fixture_team_home_score > -1">
                   <h2 ng-bind="fixture.fixture_team_away_score"></h2>
                 </div>
                 <!-- end: post-match -->
@@ -89,21 +67,12 @@
               <!-- end: time -->
 
               <!-- hover/swipe action -->
-              <div class="action animate-if"
-                   ng-if="fixture.showAction === true && currentUser.player_type === 'ADMINISTRATOR'"
-                   layout="row"
-                   layout-align="space-around center">
+              <div class="action animate-if" ng-if="fixture.showAction === true && season.currentUser.player_type === 'ADMINISTRATOR'" layout="row" layout-align="space-around center">
 
                 <div flex-lg="30" flex-gt-lg="30"></div>
 
-                <div flex
-                     layout="row"
-                     layout-align="center center">
-                  <md-button ng-dblclick="seasonController.delete(fixture)"
-                             ng-swipe-right="seasonController.delete(fixture)"
-                             ng-disabled="xhrInProgress"
-                             aria-label="activate player"
-                             class="md-fab md-warn" >
+                <div flex layout="row" layout-align="center center">
+                  <md-button ng-dblclick="season.delete(fixture)" ng-swipe-right="season.delete(fixture)" ng-disabled="xhrInProgress" aria-label="activate player" class="md-fab md-warn" >
                     <i class="ion-ios-trash-outline icon-lg"></i>
                   </md-button>
                 </div>

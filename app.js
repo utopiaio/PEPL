@@ -71,7 +71,7 @@ pgClient.query(bootSQL, [], function(error, result) {
   if(error === null) {
     // console.log(result);
 
-    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', '4706da2001c4b6b8dcecafa27c5c4155fc265ee7', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function(error, result) {
+    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', 'a809c27618f810242e3f87cf37fe600d20a28550', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function(error, result) {
       if(error === null) {
         // console.log(result);
       } else {
@@ -140,13 +140,6 @@ app.use('/api/players/:id?', players({pgClient: pgClient, emailTransporter: emai
 app.use('/api/fixtures/:id?', fixtures({pgClient: pgClient, moment: moment}));
 app.use('/api/predictions/:anonymous?', predictions({pgClient: pgClient, moment: moment}));
 app.use('/api/wall', wall({pgClient: pgClient, sockets: sockets, moment: moment}));
-
-
-
-// this makes sure angular is in-charge of routing
-app.use(function(request, response) {
-  response.sendFile(path.join(__dirname, '/public/index.html'));
-});
 
 
 
