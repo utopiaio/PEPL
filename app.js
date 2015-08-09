@@ -134,8 +134,7 @@ app.use(/^\/api\/.*/, function(request, response, next) {
   if(request.session.loggedIn === true) {
     next();
   } else {
-    response.status(412);
-    response.json({});
+    response.status(412).end();
   }
 });
 
