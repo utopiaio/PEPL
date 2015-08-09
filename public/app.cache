@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# Rev 0.2.0
+# Rev 0.2.1
 
 CACHE:
 # css
@@ -11,6 +11,7 @@ assets/css/style.css
 
 # js
 dist/js/pepl.js
+socket.io/socket.io.js
 
 # fonts
 bower_components/ionicons/fonts/ionicons.ttf?v=2.0.0
