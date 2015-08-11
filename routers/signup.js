@@ -24,7 +24,7 @@ module.exports = function(dependency) {
         } else if(request.body.player_username.length < 2 || request.body.player_username.length > 10 ||  request.body.player_password < 3 || request.body.player_email.search(/[a-zA-Z0-9\.]+@[a-zA-Z]+\.[a-zA-Z\.]+/) === -1) {
           response.status(406).end();
         } else {
-          pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username, sha1(String(request.body.player_password)), true, request.body.player_email, 'NORMAL'], function(error, result) {
+          pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5) RETURNING player_id, player_username, player_suspended, player_email, player_type;', [request.body.player_username.toLowerCase(), sha1(String(request.body.player_password)), true, request.body.player_email.toLowerCase(), 'NORMAL'], function(error, result) {
             if(error === null) {
               var mailOptions = {
                 from: emailConfig.from,
