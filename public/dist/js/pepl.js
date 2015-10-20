@@ -1020,6 +1020,7 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
               vm.fixtures[key].lock = true;
               vm.fixtures[key].showAction = false;
               vm.fixtures[key].showForm = false;
+              vm.fixtures[key].predicted = true;
             }
           });
 
