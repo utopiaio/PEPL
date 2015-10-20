@@ -952,29 +952,29 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
       $http.get('api/fixtures')
         .success(function(data, status, headers, config) {
           angular.forEach(data, function(value, key) {
-            // // if payer already predicted for fixture
-            // // we'll set the lock "mode" on
-            // for(i = 0; i < l; i++) {
-            //   if(anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === vm.currentUser.player_id) {
-            //     data[key].lock = true;
-            //     break;
-            //   }
-            // }
+            // if payer already predicted for fixture
+            // we'll set the lock "mode" on
+            for(i = 0; i < l; i++) {
+              if(anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === vm.currentUser.player_id) {
+                data[key].lock = true;
+                break;
+              }
+            }
 
-            // // if fixture time is less than 1 minute away
-            // // we'll set the lock "mode" on
-            // // you can try --- BUT good luck passing though my security check
-            // // muhahahahahahah
-            // if(moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
-            //   data[key].lock = true;
-            // }
+            // if fixture time is less than 1 minute away
+            // we'll set the lock "mode" on
+            // you can try --- BUT good luck passing though my security check
+            // muhahahahahahah
+            if(moment().add(1, 'minutes').isAfter(data[key].fixture_time) === true) {
+              data[key].lock = true;
+            }
 
             data[key].unixEpoch = moment(data[key].fixture_time).valueOf();
             data[key].age = moment(data[key].fixture_time).fromNow();
             // this accounts for different timezones which isSame "doesn't"
             // games starting at midnight will no longer be on lock-down
-            var dMinus72 = moment(data[key].fixture_time).subtract(144, 'hours'),
-                dPlus72 = moment(data[key].fixture_time).add(144, 'hours');
+            var dMinus72 = moment(data[key].fixture_time).subtract(72, 'hours'),
+                dPlus72 = moment(data[key].fixture_time).add(72, 'hours');
             data[key].showInToday = moment().isAfter(dMinus72) && moment().isBefore(dPlus72);
             /**
              * 45 minutes - first half
@@ -985,8 +985,7 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
              * grand total of...drum roll
              * 107 minutes
              */
-            // data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
-            data[key].gameIsOver = false;
+            data[key].gameIsOver = moment().isAfter(moment(data[key].fixture_time).add(107, 'minutes'));
             data[key].humanFormat = moment(data[key].fixture_time).format('MMMM DD, YYYY @ hh:mm A');
             data[key].predictions = {
               prediction_fixture: data[key].fixture_id,
