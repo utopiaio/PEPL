@@ -957,6 +957,7 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
             for(i = 0; i < l; i++) {
               if(anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === vm.currentUser.player_id) {
                 data[key].lock = true;
+                data[key].predicted = true;
                 break;
               }
             }
@@ -973,8 +974,8 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
             data[key].age = moment(data[key].fixture_time).fromNow();
             // this accounts for different timezones which isSame "doesn't"
             // games starting at midnight will no longer be on lock-down
-            var dMinus72 = moment(data[key].fixture_time).subtract(72, 'hours'),
-                dPlus72 = moment(data[key].fixture_time).add(72, 'hours');
+            var dMinus72 = moment(data[key].fixture_time).subtract(168, 'hours'),
+                dPlus72 = moment(data[key].fixture_time).add(168, 'hours');
             data[key].showInToday = moment().isAfter(dMinus72) && moment().isBefore(dPlus72);
             /**
              * 45 minutes - first half
@@ -1019,6 +1020,7 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
               vm.fixtures[key].lock = true;
               vm.fixtures[key].showAction = false;
               vm.fixtures[key].showForm = false;
+              vm.fixtures[key].predicted = true;
             }
           });
 

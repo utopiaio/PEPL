@@ -88,7 +88,8 @@
           </md-item-content>
 
           <!-- prediction submit form -->
-          <form name="predictionForm" class="animate-if" layout="column" layout-fill ng-if="fixture.showForm === true">
+          <!-- <form name="predictionForm" class="animate-if" layout="column" layout-fill ng-if="fixture.showForm === true"> -->
+          <form name="predictionForm" class="animate-if" layout="column" layout-fill ng-if="fixture.predicted === undefined">
             <div layout="row">
               <div flex-sm="5" flex-gt-sm="5" flex-md="5" flex-gt-md="5" flex-lg="20" flex-gt-lg="20"></div>
 
