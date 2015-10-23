@@ -974,8 +974,8 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
             data[key].age = moment(data[key].fixture_time).fromNow();
             // this accounts for different timezones which isSame "doesn't"
             // games starting at midnight will no longer be on lock-down
-            var dMinus72 = moment(data[key].fixture_time).subtract(168, 'hours'),
-                dPlus72 = moment(data[key].fixture_time).add(168, 'hours');
+            var dMinus72 = moment(data[key].fixture_time).subtract(336, 'hours'),
+                dPlus72 = moment(data[key].fixture_time).add(336, 'hours');
             data[key].showInToday = moment().isAfter(dMinus72) && moment().isBefore(dPlus72);
             /**
              * 45 minutes - first half
