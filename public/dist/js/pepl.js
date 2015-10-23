@@ -957,6 +957,7 @@ if(d.disabledHours=ma(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var
             for(i = 0; i < l; i++) {
               if(anonymousPredictions[i].prediction_fixture === value.fixture_id && anonymousPredictions[i].prediction_player === vm.currentUser.player_id) {
                 data[key].lock = true;
+                data[key].predicted = true;
                 break;
               }
             }
