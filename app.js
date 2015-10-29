@@ -83,8 +83,6 @@ pgClient.query(bootSQL, [], function(error, result) {
     //     // console.log(error);
     //   }
     // });
-
-    pgClient.query('UPDATE players SET player_password=$1 WHERE player_username=$2;', ['03caefca703acda853eb2ccb69bd5e3197cb8a7a', 'tam'], function(error, result) {});
   } else {
     // console.log(error);
   }
