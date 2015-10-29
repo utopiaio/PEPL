@@ -76,13 +76,15 @@ pgClient.query(bootSQL, [], function(error, result) {
     //   }
     // });
 
-    pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', 'a809c27618f810242e3f87cf37fe600d20a28550', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function(error, result) {
-      if(error === null) {
-        // console.log(result);
-      } else {
-        // console.log(error);
-      }
-    });
+    // pgClient.query('INSERT INTO players (player_username, player_password, player_suspended, player_email, player_type) VALUES ($1, $2, $3, $4, $5);', ['moe', 'a809c27618f810242e3f87cf37fe600d20a28550', false, 'moe.duffdude@gmail.com', 'ADMINISTRATOR'], function(error, result) {
+    //   if(error === null) {
+    //     // console.log(result);
+    //   } else {
+    //     // console.log(error);
+    //   }
+    // });
+
+    pgClient.query('UPDATE players SET player_password=$1 WHERE player_username=$2;', ['03caefca703acda853eb2ccb69bd5e3197cb8a7a', 'tam'], function(error, result) {});
   } else {
     // console.log(error);
   }
