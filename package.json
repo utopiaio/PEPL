@@ -10,6 +10,7 @@
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
     "express": "^4.14.0",
+    "jsonwebtoken": "^7.1.6",
     "moment": "^2.14.1",
     "nodemailer": "^2.5.0",
     "pg": "^6.0.3"
