@@ -1,5 +1,5 @@
 {
-  "name": "PEPL",
+  "name": "pepl",
   "author": "Moe Szyslak <moe.duffdude@gmail.com>",
   "description": "Prediction English Premier League",
   "version": "2.0.0",
@@ -18,8 +18,5 @@
   "engines": {
     "node": "latest",
     "npm": "latest"
-  },
-  "scripts": {
-    "postinstall": "bower install"
   }
 }

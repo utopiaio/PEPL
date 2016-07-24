@@ -1,24 +1,12 @@
 CACHE MANIFEST
-# Rev 0.2.4
+# Rev 2.0.0
 
 CACHE:
 # css
-bower_components/angular-material/angular-material.min.css
-bower_components/ionicons/css/ionicons.min.css
-bower_components/bootstrap/dist/css/bootstrap.min.css
-bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css
-assets/css/style.css
 
 # js
-dist/js/pepl.js
-socket.io/socket.io.js
 
 # fonts
-bower_components/ionicons/fonts/ionicons.ttf?v=2.0.0
-assets/fonts/clearsans/WOFF/ClearSans-Light.woff
-assets/fonts/clearsans/WOFF/ClearSans-Medium.woff
-assets/fonts/clearsans/WOFF/ClearSans-Regular.woff
-assets/fonts/clearsans/WOFF/ClearSans-Thin.woff
 
 # images
 assets/images/carlostocat.gif
@@ -45,14 +33,6 @@ assets/images/teams/West-Bromwich-Albion.png
 assets/images/teams/West-Ham-United.png
 
 # html
-index.html
-views/fixture-new.html
-views/fixtures.html
-views/login.html
-views/players.html
-views/season.html
-views/standings.html
-views/wall.html
 
 NETWORK:
 *
