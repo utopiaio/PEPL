@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const autoprefixer = require('autoprefixer');
 
 module.exports = {
   entry: ['./app/index.js'],
@@ -10,14 +11,40 @@ module.exports = {
   },
   module: {
     loaders: [
+      // jsx and js
       {
         test: /\.jsx?$/,
         include: path.join(__dirname, 'app'),
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
+
+      // css
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader!postcss-loader',
+      },
+
+      // less
+      {
+        test: /\.less$/,
+        loader: 'style-loader!css-loader!postcss-loader!less-loader',
+      },
+
+      // image
+      {
+        test: /\.(jpg|png|gif)$/,
+        loader: 'file-loader?name=static/[name].[ext]',
+      },
+
+      // fonts
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file-loader?name=static/[name].[ext]',
+      },
     ],
   },
+  postcss: [autoprefixer({ browsers: ['> 0%'] })],
 };
 
 // depending on the arguments passes we'll be adding specific
