@@ -43,12 +43,12 @@ pgClient.connect();
 const app = express();
 app.set('port', process.env.PORT || 8000);
 
-// HTTPS
-app.use((request, response, next) => {
-  request.headers['x-forwarded-proto'] === 'https'
-    ? next()
-    : response.redirect(301, 'https://pepl.herokuapp.com');
-});
+// // force HTTPS
+// app.use((request, response, next) => {
+//   request.headers['x-forwarded-proto'] === 'https'
+//     ? next()
+//     : response.redirect(301, 'https://pepl.herokuapp.com');
+// });
 app.use(compression());
 app.use(favicon(path.join(__dirname, 'public/static/images/favicon.ico')));
 app.use('/app.cache$', (request, response, next) => {
@@ -56,15 +56,11 @@ app.use('/app.cache$', (request, response, next) => {
   next();
 });
 app.use(express.static(path.join(__dirname, '/public')));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true,
-}));
+app.use(bodyParser.urlencoded()); // parse application/x-www-form-urlencoded
+app.use(bodyParser.json()); // parse application/json
 
 // app.use('/api/login', login({pgClient: pgClient, sha1: sha1}));
 // app.use('/api/signup', signup({pgClient: pgClient, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
-
-
 
 /**
  * this middle fellow will check for authentication (i.e. session)
