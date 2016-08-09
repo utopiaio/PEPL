@@ -90,20 +90,19 @@
 const auth = require('./../rock/auth');
 
 module.exports = (params) => {
-  const { pgClient, CONFIG } = params;
+  const { pgClient, config } = params;
 
   return (request, response) => {
     switch (request.method) {
       case 'GET': {
-        const decoded = auth.verify(request.headers, CONFIG.JWT.header, CONFIG.JWT.secret);
-
+        const decoded = auth.verify(request.headers, config.JWT_HEADER, config.JWT_KEY);
         response.status(decoded === false ? 401 : 200);
 
         if (decoded === false) {
           response.end();
         } else {
           response
-            .json({ auth: auth.verify(request.headers, CONFIG.JWT.header, CONFIG.JWT.secret) })
+            .json({ auth: auth.verify(request.headers, config.JWT_HEADER, config.JWT_KEY) })
             .end();
         }
         break;
@@ -116,8 +115,8 @@ module.exports = (params) => {
               response
                 .status(202)
                 .json({
-                  id: result.rows[0].player_id,
-                  auth: auth.sign({ iss: 'PEPL', iat: Date.now() }, 'SECRET'),
+                  id: result.rows[0].user_id,
+                  auth: auth.sign({ iss: config.JWT_ISS, iat: Date.now() }, config.JWT_KEY),
                 })
                 .end();
             } else {

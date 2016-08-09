@@ -12,38 +12,14 @@ const express = require('express');
 const favicon = require('serve-favicon');
 const bodyParser = require('body-parser');
 const compression = require('compression');
-const pg = require('pg');
-const nodemailer = require('nodemailer');
+
+const config = require('./config');
+
+const moedoo = require('./rock/moedoo')(config);
+const mail = require('./util/mail')(config.email);
+const pgClient = moedoo.pgClient();
+
 const login = require('./routes/login');
-
-// app configurations
-const CONFIG = {
-  JWT: {
-    secret: 'PEPL_!6_!7',
-    iss: 'PEPL',
-    header: 'authorization',
-  },
-  JWT_SECRET: '',
-  pgDevConnectionString: 'tcp://moe:@127.0.0.1:5432/pepl',
-  email: {
-    service: 'Gmail',
-    auth: {
-      user: 'moe.duffdude@gmail.com',
-      pass: 'acwlumyyqrnmetpb', // has been revoked --- i think
-    },
-    from: 'MaMoe <moe.duffdude@gmail.com>',
-    adminEmail: 'moe.duffdude@gmail.com',
-  },
-};
-
-// email transport
-const emailTransporter = nodemailer.createTransport({
-  service: CONFIG.email.service,
-  auth: CONFIG.email.auth,
-});
-
-const pgClient = new pg.Client(process.env.DATABASE_URL || CONFIG.pgDevConnectionString);
-pgClient.connect();
 
 const app = express();
 app.set('port', process.env.PORT || 8000);
@@ -64,10 +40,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 
-// app.use('/api/login', (request, response) => {
-//   response.json(request.body).status(202).end();
-// });
-app.use('/api/login', login({ pgClient, CONFIG }));
+app.use('/api/login', login({ pgClient, config }));
 // app.use('/api/signup', signup({pgClient: pgClient, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 
 /**
