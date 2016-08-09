@@ -14,11 +14,16 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const pg = require('pg');
 const nodemailer = require('nodemailer');
-const moment = require('moment');
-const sha512 = require('./lib/cyper');
+const login = require('./routes/login');
 
 // app configurations
 const CONFIG = {
+  JWT: {
+    secret: 'PEPL_!6_!7',
+    iss: 'PEPL',
+    header: 'authorization',
+  },
+  JWT_SECRET: '',
   pgDevConnectionString: 'tcp://moe:@127.0.0.1:5432/pepl',
   email: {
     service: 'Gmail',
@@ -56,10 +61,13 @@ app.use('/app.cache$', (request, response, next) => {
   next();
 });
 app.use(express.static(path.join(__dirname, '/public')));
-app.use(bodyParser.urlencoded()); // parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 
-// app.use('/api/login', login({pgClient: pgClient, sha1: sha1}));
+// app.use('/api/login', (request, response) => {
+//   response.json(request.body).status(202).end();
+// });
+app.use('/api/login', login({ pgClient, CONFIG }));
 // app.use('/api/signup', signup({pgClient: pgClient, sha1: sha1, emailTransporter: emailTransporter, emailConfig: emailConfig}));
 
 /**
