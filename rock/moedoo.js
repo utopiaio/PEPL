@@ -46,5 +46,52 @@ module.exports = (config) => {
 
       return build.substring(0, build.length - 2);
     },
+
+    /**
+     * given table and data; casts appropriately for pg operation
+     *
+     * @param  {String} table
+     * @param  {Object} data
+     * @return {Object}
+     */
+    castForPg(table, data) {
+      const copy = Object.assign({}, data);
+
+      Object.keys(copy).forEach((column) => {
+        if (
+          config.TABLES[table].hasOwnProperty('JSON') &&
+          config.TABLES[table].JSON.includes(column)
+        ) {
+          copy[column] = JSON.stringify(copy[column]);
+        } else if (
+          config.TABLES[table].hasOwnProperty('bool') &&
+          config.TABLES[table].bool.includes(column)
+        ) {
+          copy[column] = copy[column] === true ? 'TRUE' : 'FALSE';
+        } else if (
+          config.TABLES[table].hasOwnProperty('geometry') &&
+          config.TABLES[table].geometry.includes(column)
+        ) {
+          copy[column] = JSON.stringify(copy[column]);
+        } else if (
+          (
+            config.TABLES[table].hasOwnProperty('[int]') &&
+            config.TABLES[table]['[int]'].includes(column)
+          ) ||
+          (
+            config.TABLES[table].hasOwnProperty('[float]') &&
+            config.TABLES[table]['[float]'].includes(column)
+          ) ||
+          (
+            config.TABLES[table].hasOwnProperty('[double]') &&
+            config.TABLES[table]['[double]'].includes(column)
+          )
+        ) {
+          copy[column] = copy[column].join(', ');
+        }
+      });
+
+      return copy;
+    },
   };
 };
