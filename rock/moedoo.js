@@ -87,7 +87,7 @@ module.exports = (config) => {
             config.TABLES[table]['[double]'].includes(column)
           )
         ) {
-          copy[column] = copy[column].join(', ');
+          copy[column] = `{${copy[column].join(', ')}}`;
         }
       });
 
