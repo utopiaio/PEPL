@@ -54,15 +54,24 @@ module.exports = {
 
   TABLE_PREFIX: 'pepl_',
   TABLES: {
+    user_group: {
+      pk: 'id',
+      columns: ['id', 'user_group_name', 'user_group_status', 'user_group_has_permission_create_user', 'user_group_has_permission_read_user', 'user_group_has_permission_update_user', 'user_group_has_permission_delete_user', 'user_group_has_permission_create_user_group', 'user_group_has_permission_read_user_group', 'user_group_has_permission_update_user_group', 'user_group_has_permission_delete_user_group'],
+      returning: ['id', 'user_group_name', 'user_group_status', 'user_group_has_permission_create_user', 'user_group_has_permission_read_user', 'user_group_has_permission_update_user', 'user_group_has_permission_delete_user', 'user_group_has_permission_create_user_group', 'user_group_has_permission_read_user_group', 'user_group_has_permission_update_user_group', 'user_group_has_permission_delete_user_group'],
+      bool: ['user_group_status'],
+      search: ['user_group_name'],
+      fk: {
+        '{user}': { table: 'user', 'referencedBy': 'id', referencingColumn: 'user_user_group' }
+      }
+    },
     user: {
-      pk: 'user_id',
-      columns: ['user_id', 'user_full_name', 'user_username', 'user_password', 'user_status', 'user_group'],
-      returning: ['user_id', 'user_full_name', 'user_username', 'user_status', 'user_group'],
-      int: ['user_id', 'user_group'],
+      pk: 'id',
+      columns: ['id', 'user_full_name', 'user_username', 'user_password', 'user_status', 'user_user_group'],
+      returning: ['id', 'user_full_name', 'user_username', 'user_status', 'user_user_group'],
       bool: ['user_status'],
       search: ['user_full_name', 'user_username'],
       fk: {
-        user_group: { table: 'user_group', references: 'user_group_id' },
+        user_user_group: { table: 'user_group', references: 'id' },
       },
     },
   },
