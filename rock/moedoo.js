@@ -37,7 +37,10 @@ module.exports = (config) => {
       let build = '';
 
       config.TABLES[table].returning.forEach((column) => {
-        if (config.TABLES[table].hasOwnProperty('geometry') && config.TABLES[table].geometry.includes(column)) {
+        if (
+          config.TABLES[table].hasOwnProperty('geometry') &&
+          config.TABLES[table].geometry.includes(column)
+        ) {
           build += `ST_AsGeoJSON(${column}) as ${column}, `;
         } else {
           build += `${column}, `;
